@@ -529,6 +529,12 @@ def run_uv_sync(extras: list, cuda_version: str, dev: bool = False,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,  # merge stderr into stdout
             text=True,
+            # Force UTF-8: on Chinese Windows the locale encoding is GBK and
+            # decoding uv's UTF-8 verbose output (git remotes, URLs) crashes
+            # with "'gbk' codec can't decode". errors="replace" keeps the
+            # stream readable even if some bytes are not valid UTF-8.
+            encoding="utf-8",
+            errors="replace",
             bufsize=1,  # line-buffered
         )
 
@@ -588,7 +594,8 @@ def run_uv_pip_install(args: list, description: str, allow_fail: bool = False) -
     log(f"\n>>> {description}")
     log(f"    {' '.join(cmd[:8])}{'...' if len(cmd) > 8 else ''}")
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
+        result = subprocess.run(cmd, capture_output=True, text=True,
+                                encoding="utf-8", errors="replace", timeout=1800)
         if result.returncode != 0:
             if allow_fail:
                 log(f"    [WARN] {description} — failed (optional)")

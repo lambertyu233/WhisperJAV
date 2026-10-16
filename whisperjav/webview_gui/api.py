@@ -3956,6 +3956,7 @@ class WhisperJAVAPI:
         "accept_cpu_mode":           "acceptCpuMode",
         "offline_mode":              "offlineMode",
         "async_processing":          "asyncProcessing",
+        "ui_language":               "uiLanguage",
         "pass1_pipeline":            "pass1Pipeline",
         "pass1_sensitivity":         "pass1Sensitivity",
         "pass1_scene_detector":      "pass1SceneDetector",

@@ -186,6 +186,22 @@ body {
     background: var(--hover-tab-bg);
 }
 
+/* UI language menu — shares the theme-menu look, sits left of the theme menu.
+   Header padding is 12px, buttons 24px with 6px gap: themeBtn right edge at
+   12px, langBtn right edge at 66px — mirror the theme menu's alignment. */
+.lang-menu {
+    right: 66px;
+    min-width: 140px;
+}
+
+.lang-menu .lang-option.checked::before {
+    content: "\2713";
+    display: inline-block;
+    width: 1.2em;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
 .app-main {
     flex: 1;
     overflow-y: auto;

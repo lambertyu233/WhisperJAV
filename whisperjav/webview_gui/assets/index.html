@@ -13,26 +13,35 @@
 
         <!-- Header -->
         <header class="app-header">
-            <h1>WhisperJAV</h1>
+            <h1 data-i18n="header.title">WhisperJAV</h1>
             <div class="header-actions">
                 <!-- Subtle update indicator (shown inline in header) -->
-                <a id="updateIndicator" class="update-indicator" href="#" title="Click for details" style="display:none;">
+                <a id="updateIndicator" class="update-indicator" href="#" data-i18n-title="header.updateDetails" title="Click for details" style="display:none;">
                     <span class="update-indicator-dot"></span>
-                    <span id="updateIndicatorText">Update available</span>
+                    <span id="updateIndicatorText" data-i18n="header.updateAvailable">Update available</span>
                 </a>
+                <!-- UI language switch button -->
+                <button id="langBtn" class="theme-button lang-button" aria-label="Language" data-i18n-aria="header.theme" data-i18n-title="lang.selectLanguage" title="Select language">
+                    🌐
+                </button>
+                <!-- Language popover menu -->
+                <div id="langMenu" class="theme-menu lang-menu" role="menu" data-i18n-aria="lang.selectLanguage" aria-label="Select language">
+                    <button class="theme-option lang-option" role="menuitemradio" data-lang="en" aria-checked="true">English</button>
+                    <button class="theme-option lang-option" role="menuitemradio" data-lang="zh-CN" aria-checked="false">中文（简体）</button>
+                </div>
                 <!-- Minimal theme switch button -->
-                <button id="themeBtn" class="theme-button" aria-label="Theme" title="Theme">
+                <button id="themeBtn" class="theme-button" aria-label="Theme" data-i18n-aria="header.theme" data-i18n-title="header.theme" title="Theme">
                     🎨
                 </button>
                 <!-- Tiny popover menu -->
-                <div id="themeMenu" class="theme-menu" role="menu" aria-label="Select theme">
-                    <button class="theme-option" data-theme="default" role="menuitem">Default Theme</button>
-                    <button class="theme-option" data-theme="google" role="menuitem">Google Theme</button>
-                    <button class="theme-option" data-theme="carbon" role="menuitem">IBM Carbon Theme</button>
-                    <button class="theme-option" data-theme="primer" role="menuitem">GitHub Primer Theme</button>
+                <div id="themeMenu" class="theme-menu" role="menu" data-i18n-aria="header.selectTheme" aria-label="Select theme">
+                    <button class="theme-option" data-theme="default" role="menuitem" data-i18n="header.themeDefault">Default Theme</button>
+                    <button class="theme-option" data-theme="google" role="menuitem" data-i18n="header.themeGoogle">Google Theme</button>
+                    <button class="theme-option" data-theme="carbon" role="menuitem" data-i18n="header.themeCarbon">IBM Carbon Theme</button>
+                    <button class="theme-option" data-theme="primer" role="menuitem" data-i18n="header.themePrimer">GitHub Primer Theme</button>
                     <div class="theme-menu-divider"></div>
                     <button class="theme-option update-check-option" id="checkUpdatesBtn" role="menuitem">
-                        <span class="update-check-icon">&#x2B06;</span> Check for Updates
+                        <span class="update-check-icon">&#x2B06;</span> <span data-i18n="header.checkUpdates">Check for Updates</span>
                     </button>
                 </div>
             </div>
@@ -43,18 +52,18 @@
             <div class="update-banner-content">
                 <span class="update-banner-icon">&#x2B06;</span>
                 <div class="update-banner-text">
-                    <span class="update-banner-title" id="updateTitle">Update Available</span>
+                    <span class="update-banner-title" id="updateTitle" data-i18n="update.title">Update Available</span>
                     <span class="update-banner-version" id="updateVersion">v1.7.5 is now available</span>
                 </div>
             </div>
             <div class="update-banner-actions">
-                <button class="update-btn update-btn-secondary" id="updateReleaseNotesBtn" title="View release notes">
-                    Release Notes
+                <button class="update-btn update-btn-secondary" id="updateReleaseNotesBtn" data-i18n-title="update.viewReleaseNotes" title="View release notes">
+                    <span data-i18n="update.releaseNotes">Release Notes</span>
                 </button>
-                <button class="update-btn update-btn-primary" id="updateNowBtn">
+                <button class="update-btn update-btn-primary" id="updateNowBtn" data-i18n="update.openReleasePage">
                     Open Release Page
                 </button>
-                <button class="update-dismiss" id="updateDismissBtn" title="Dismiss" aria-label="Dismiss">
+                <button class="update-dismiss" id="updateDismissBtn" data-i18n-title="update.dismiss" data-i18n-aria="update.dismiss" title="Dismiss" aria-label="Dismiss">
                     &times;
                 </button>
             </div>
@@ -64,11 +73,11 @@
         <div id="updateProgressOverlay" class="update-progress-overlay">
             <div class="update-progress-dialog">
                 <div class="update-progress-icon">&#x21BB;</div>
-                <div class="update-progress-title">Updating WhisperJAV</div>
-                <div class="update-progress-message">
+                <div class="update-progress-title" data-i18n="update.progressTitle">Updating WhisperJAV</div>
+                <div class="update-progress-message" data-i18n="update.progressMessage">
                     The application will restart automatically after the update completes.
                 </div>
-                <div class="update-progress-step" id="updateProgressStep">
+                <div class="update-progress-step" id="updateProgressStep" data-i18n="update.progressPreparing">
                     Preparing update...
                 </div>
             </div>
@@ -80,7 +89,7 @@
             <!-- Source Section -->
             <section class="section source-section">
                 <div class="section-header">
-                    <h2>Source</h2>
+                    <h2 data-i18n="source.title">Source</h2>
                 </div>
                 <div class="section-content">
                     <!-- File List Display -->
@@ -88,24 +97,24 @@
                         <div class="file-list" id="fileList" tabindex="0">
                             <div class="empty-state" id="emptyState">
                                 <span class="empty-icon">📂</span>
-                                <p>No files selected</p>
-                                <p class="empty-hint">Click "Add File(s)" or "Add Folder" to get started</p>
+                                <p data-i18n="source.empty">No files selected</p>
+                                <p class="empty-hint" data-i18n="source.emptyHint">Click "Add File(s)" or "Add Folder" to get started</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- File Management Buttons -->
                     <div class="button-group">
-                        <button type="button" class="btn btn-primary" id="addFilesBtn">
+                        <button type="button" class="btn btn-primary" id="addFilesBtn" data-i18n="source.addFiles">
                             Add File(s)
                         </button>
-                        <button type="button" class="btn btn-primary" id="addFolderBtn">
+                        <button type="button" class="btn btn-primary" id="addFolderBtn" data-i18n="source.addFolder">
                             Add Folder
                         </button>
-                        <button type="button" class="btn btn-secondary" id="removeSelectedBtn" disabled>
+                        <button type="button" class="btn btn-secondary" id="removeSelectedBtn" data-i18n="source.removeSelected" disabled>
                             Remove Selected
                         </button>
-                        <button type="button" class="btn btn-secondary" id="clearBtn" disabled>
+                        <button type="button" class="btn btn-secondary" id="clearBtn" data-i18n="source.clear" disabled>
                             Clear
                         </button>
                     </div>
@@ -115,26 +124,27 @@
             <!-- Destination Section -->
             <section class="section destination-section">
                 <div class="section-header">
-                    <h2>Destination</h2>
+                    <h2 data-i18n="destination.title">Destination</h2>
                 </div>
                 <div class="section-content">
                     <div class="output-source-toggle">
                         <input type="checkbox" id="outputToSource" checked>
-                        <label for="outputToSource">Save next to source video</label>
+                        <label for="outputToSource" data-i18n="destination.saveNextToSource">Save next to source video</label>
                     </div>
                     <div class="output-control">
-                        <label for="outputDir" class="control-label">Output:</label>
+                        <label for="outputDir" class="control-label" data-i18n="destination.output">Output:</label>
                         <input
                             type="text"
                             id="outputDir"
                             class="output-path"
                             readonly
+                            data-i18n-placeholder="destination.outputPlaceholder"
                             placeholder="Output directory..."
                         >
-                        <button type="button" class="btn btn-secondary" id="browseOutputBtn">
+                        <button type="button" class="btn btn-secondary" id="browseOutputBtn" data-i18n="destination.browse">
                             Browse
                         </button>
-                        <button type="button" class="btn btn-secondary" id="openOutputBtn">
+                        <button type="button" class="btn btn-secondary" id="openOutputBtn" data-i18n="destination.open">
                             Open
                         </button>
                     </div>
@@ -153,6 +163,7 @@
                             aria-controls="tab1-panel"
                             id="tab1-button"
                             data-tab="tab1"
+                            data-i18n="tab.transcription"
                         >
                             Transcription Mode
                         </button>
@@ -163,6 +174,7 @@
                             aria-controls="tab2-panel"
                             id="tab2-button"
                             data-tab="tab2"
+                            data-i18n="tab.advanced"
                         >
                             Transcription Adv. Options
                         </button>
@@ -173,6 +185,7 @@
                             aria-controls="tab3-panel"
                             id="tab3-button"
                             data-tab="tab3"
+                            data-i18n="tab.ensemble"
                         >
                             Ensemble Mode
                         </button>
@@ -183,6 +196,7 @@
                             aria-controls="tab4-panel"
                             id="tab4-button"
                             data-tab="tab4"
+                            data-i18n="tab.translate"
                         >
                             AI SRT Translate
                         </button>
@@ -204,7 +218,7 @@
                                 <div class="form-column">
                                     <!-- Mode Selection -->
                                     <div class="form-group">
-                                        <label for="mode" class="form-label">Mode (ASR Engine options):</label>
+                                        <label for="mode" class="form-label" data-i18n="t1.mode">Mode (ASR Engine options):</label>
                                         <select id="mode" class="form-select mode-select">
                                             <option value="fidelity">fidelity&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(large-v2-fp16&nbsp;&nbsp;&nbsp;10GB VRAM)</option>
                                             <option value="balanced" selected>balanced&nbsp;&nbsp;&nbsp;&nbsp;(large-v2-int8&nbsp;&nbsp;&nbsp;&nbsp;6GB VRAM)</option>
@@ -221,7 +235,7 @@
 
                                     <!-- Sensitivity -->
                                     <div class="form-group">
-                                        <label for="sensitivity" class="form-label">Sensitivity (accuracy vs false-positives):</label>
+                                        <label for="sensitivity" class="form-label" data-i18n="t1.sensitivity">Sensitivity (accuracy vs false-positives):</label>
                                         <select id="sensitivity" class="form-select">
                                             <option value="aggressive" selected>aggressive (hi-details, noise)</option>
                                             <option value="balanced">balanced (details, lo-noise)</option>
@@ -234,7 +248,7 @@
                                 <div class="form-column">
                                     <!-- Source Audio Language -->
                                     <div class="form-group">
-                                        <label for="source-language" class="form-label">Source audio language:</label>
+                                        <label for="source-language" class="form-label" data-i18n="t1.sourceLanguage">Source audio language:</label>
                                         <select id="source-language" class="form-select">
                                             <option value="japanese" selected>Japanese (日本語)</option>
                                             <option value="korean">Korean (한국어)</option>
@@ -245,7 +259,7 @@
 
                                     <!-- Subtitle Output Format -->
                                     <div class="form-group">
-                                        <label for="language" class="form-label">Subtitle output:</label>
+                                        <label for="language" class="form-label" data-i18n="t1.subtitleOutput">Subtitle output:</label>
                                         <select id="language" class="form-select">
                                             <option value="native" selected>Native (transcribe in source language)</option>
                                             <option value="direct-to-english">Direct to English (translate via Whisper)</option>
@@ -257,12 +271,12 @@
                             <!-- Row 2: Info Labels -->
                             <div class="form-row info-row">
                                 <div class="info-group">
-                                    <p class="info-text">
+                                    <p class="info-text" data-i18n-html="t1.infoSpeed">
                                         Speed vs. Accuracy: 'fast' and 'faster' prioritize throughput; <br>'fidelity' favors accuracy.
                                     </p>
                                 </div>
                                 <div class="info-group">
-                                    <p class="info-text">
+                                    <p class="info-text" data-i18n-html="t1.infoNoise">
                                         Details vs. Noise: 'conservative' reduces false positives; <br>'aggressive' may include noise while capturing more detail.
                                     </p>
                                 </div>
@@ -271,7 +285,7 @@
                             <!-- Row 3: Transformers Info (shown when transformers mode selected) -->
                             <div class="form-row info-row transformers-info" id="transformersInfoRow" style="display: none;">
                                 <div class="info-group full-width">
-                                    <p class="info-text info-transformers">
+                                    <p class="info-text info-transformers" data-i18n-html="t1.transformersInfo">
                                         <strong>Transformers Mode:</strong> Uses HuggingFace pipeline with chunked long-form algorithm.
                                         Sensitivity presets do not apply. Use Ensemble tab's "Customize Parameters" button for fine-tuning.
                                     </p>
@@ -282,11 +296,11 @@
                                  Self-contained external provider — NOT the BYOP panel. -->
                             <div class="byop-settings-panel" id="crispasrModeRow" style="display: none;">
                                 <div class="byop-settings-header">
-                                    <span class="byop-title">CrispASR (external provider)</span>
-                                    <span class="byop-hint">Self-contained engine — WhisperJAV scene/segmenter/enhancer settings do not apply</span>
+                                    <span class="byop-title" data-i18n="t1.crispasrTitle">CrispASR (external provider)</span>
+                                    <span class="byop-hint" data-i18n="t1.crispasrHint">Self-contained engine — WhisperJAV scene/segmenter/enhancer settings do not apply</span>
                                 </div>
                                 <div class="byop-settings-row">
-                                    <label class="byop-label" for="crispasr-mode-backend">Backend</label>
+                                    <label class="byop-label" for="crispasr-mode-backend" data-i18n="t1.backend">Backend</label>
                                     <select id="crispasr-mode-backend" class="form-select compact">
                                         <option value="parakeet" selected>parakeet (native word ts)</option>
                                         <option value="whispercpp">whispercpp (whisper.cpp large-v2)</option>
@@ -294,17 +308,23 @@
                                     </select>
                                 </div>
                                 <div class="byop-settings-row">
-                                    <label class="byop-label" for="crispasr-mode-exe-path">Executable</label>
+                                    <label class="byop-label" for="crispasr-mode-exe-path" data-i18n="t1.executable">Executable</label>
                                     <input type="text" id="crispasr-mode-exe-path" class="form-input byop-path-input"
+                                           data-i18n-placeholder="t1.crispasrExePlaceholder"
                                            placeholder="Path to the crispasr executable" readonly
+                                           data-i18n-title="t1.crispasrExeClickTitle"
                                            title="Click Browse to select the crispasr executable">
                                     <button type="button" class="btn btn-secondary btn-compact" id="crispasr-mode-browse-btn"
+                                            data-i18n="destination.browse"
+                                            data-i18n-title="t1.crispasrExeBrowseTitle"
                                             title="Browse for the crispasr executable">Browse</button>
                                 </div>
                                 <div class="byop-settings-row">
-                                    <label class="byop-label" for="crispasr-mode-extra-args">Extra Args</label>
+                                    <label class="byop-label" for="crispasr-mode-extra-args" data-i18n="t1.extraArgs">Extra Args</label>
                                     <input type="text" id="crispasr-mode-extra-args" class="form-input byop-args-input"
+                                           data-i18n-placeholder="t1.crispasrArgsPlaceholder"
                                            placeholder="e.g. --vad --split-on-punct"
+                                           data-i18n-title="t1.crispasrArgsTitle"
                                            title="Additional command-line arguments passed verbatim to crispasr">
                                 </div>
                             </div>
@@ -323,7 +343,7 @@
                                 <div class="form-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" id="modelOverrideEnabled">
-                                        <span>Model override</span>
+                                        <span data-i18n="t2.modelOverride">Model override</span>
                                     </label>
                                 </div>
                                 <div class="form-group tight-pair">
@@ -336,21 +356,21 @@
                                 <div class="form-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" id="asyncProcessing">
-                                        <span>Async processing</span>
+                                        <span data-i18n="t2.asyncProcessing">Async processing</span>
                                     </label>
                                 </div>
                                 <div class="form-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" id="debugLogging">
-                                        <span>Debug logging</span>
+                                        <span data-i18n="t2.debugLogging">Debug logging</span>
                                     </label>
                                 </div>
                                 <div class="form-group tight-pair">
-                                    <label for="outputFormat" class="form-label" style="white-space: nowrap;">Output:</label>
+                                    <label for="outputFormat" class="form-label" style="white-space: nowrap;" data-i18n="t2.output">Output:</label>
                                     <select id="outputFormat" class="form-select">
                                         <option value="srt" selected>SRT</option>
                                         <option value="vtt">VTT</option>
-                                        <option value="both">Both</option>
+                                        <option value="both" data-i18n="t2.outputBoth">Both</option>
                                     </select>
                                 </div>
                             </div>
@@ -360,31 +380,32 @@
                                 <div class="form-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" id="keepTemp">
-                                        <span>Keep temp files</span>
+                                        <span data-i18n="t2.keepTemp">Keep temp files</span>
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="checkbox-label" title="Skip files that already have a WhisperJAV subtitle in the output folder">
+                                    <label class="checkbox-label" data-i18n-title="t2.skipExistingTitle" title="Skip files that already have a WhisperJAV subtitle in the output folder">
                                         <input type="checkbox" id="skipExisting">
-                                        <span>Skip already-subtitled files</span>
+                                        <span data-i18n="t2.skipExisting">Skip already-subtitled files</span>
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="checkbox-label" title="Restore these form settings the next time WhisperJAV starts">
+                                    <label class="checkbox-label" data-i18n-title="t2.rememberSettingsTitle" title="Restore these form settings the next time WhisperJAV starts">
                                         <input type="checkbox" id="rememberSettings">
-                                        <span>Remember settings</span>
+                                        <span data-i18n="t2.rememberSettings">Remember settings</span>
                                     </label>
                                 </div>
                                 <div class="form-group temp-dir-group inline-field">
-                                    <label for="tempDir" class="form-label" style="white-space: nowrap;">Temp dir:</label>
+                                    <label for="tempDir" class="form-label" style="white-space: nowrap;" data-i18n="t2.tempDir">Temp dir:</label>
                                     <div class="input-with-button">
                                         <input
                                             type="text"
                                             id="tempDir"
                                             class="form-input"
+                                            data-i18n-placeholder="t2.tempDirPlaceholder"
                                             placeholder="Default system temp directory"
                                         >
-                                        <button type="button" class="btn btn-secondary btn-sm" id="browseTempBtn">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="browseTempBtn" data-i18n="destination.browse">
                                             Browse
                                         </button>
                                     </div>
@@ -394,15 +415,15 @@
                             <!-- Row 3: Accept CPU mode -->
                             <div class="form-row" id="adv-row-3">
                                 <div class="form-group">
-                                    <label class="checkbox-label" title="The answer to the start-up check: when no usable GPU is found (none present, or the card is not supported by this PyTorch build) a run stops and asks whether to continue on the CPU. The GUI cannot ask, so without this box such a run aborts. Applies to Transcription and Ensemble runs (same as --accept-cpu-mode).">
+                                    <label class="checkbox-label" data-i18n-title="t2.acceptCpuTitle" title="The answer to the start-up check: when no usable GPU is found (none present, or the card is not supported by this PyTorch build) a run stops and asks whether to continue on the CPU. The GUI cannot ask, so without this box such a run aborts. Applies to Transcription and Ensemble runs (same as --accept-cpu-mode).">
                                         <input type="checkbox" id="acceptCpuMode">
-                                        <span>Accept CPU-only mode (proceed on the CPU when the GPU is missing or unsupported)</span>
+                                        <span data-i18n="t2.acceptCpu">Accept CPU-only mode (proceed on the CPU when the GPU is missing or unsupported)</span>
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="checkbox-label" title="Use only the Hugging Face models already downloaded and make no requests to huggingface.co (same as --offline). A model that has not been downloaded fails immediately instead of retrying for minutes. Silero via torch.hub, openai-whisper weights, ModelScope enhancers and NeMo configs are not covered.">
+                                    <label class="checkbox-label" data-i18n-title="t2.offlineModeTitle" title="Use only the Hugging Face models already downloaded and make no requests to huggingface.co (same as --offline). A model that has not been downloaded fails immediately instead of retrying for minutes. Silero via torch.hub, openai-whisper weights, ModelScope enhancers and NeMo configs are not covered.">
                                         <input type="checkbox" id="offlineMode">
-                                        <span>Offline mode (downloaded Hugging Face models only)</span>
+                                        <span data-i18n="t2.offlineMode">Offline mode (downloaded Hugging Face models only)</span>
                                     </label>
                                 </div>
                             </div>
@@ -410,21 +431,21 @@
                                  Only 'failed' fails the run by default; these promote the other two. Same as --fail-on. -->
                             <div class="form-row" id="adv-row-4">
                                 <div class="form-group">
-                                    <label class="checkbox-label" title="A file that produced no subtitles is reported as 'empty' and does not fail the run. Tick to treat it as a failure (same as --fail-on empty).">
+                                    <label class="checkbox-label" data-i18n-title="t2.failOnEmptyTitle" title="A file that produced no subtitles is reported as 'empty' and does not fail the run. Tick to treat it as a failure (same as --fail-on empty).">
                                         <input type="checkbox" id="failOnEmpty">
-                                        <span>Treat 'empty' files as failures</span>
+                                        <span data-i18n="t2.failOnEmpty">Treat 'empty' files as failures</span>
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="checkbox-label" title="A file whose subtitles cover too little of the media, whose recognizer stopped while speech was still detected, or whose audio track looks damaged is reported as 'suspect' and does not fail the run. Tick to treat it as a failure (same as --fail-on suspect); a file with damaged audio is then stopped before transcription.">
+                                    <label class="checkbox-label" data-i18n-title="t2.failOnSuspectTitle" title="A file whose subtitles cover too little of the media, whose recognizer stopped while speech was still detected, or whose audio track looks damaged is reported as 'suspect' and does not fail the run. Tick to treat it as a failure (same as --fail-on suspect); a file with damaged audio is then stopped before transcription.">
                                         <input type="checkbox" id="failOnSuspect">
-                                        <span>Treat 'suspect' files as failures</span>
+                                        <span data-i18n="t2.failOnSuspect">Treat 'suspect' files as failures</span>
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="checkbox-label" title="Balanced runs keep a per-scene record of the recognizer (timing, decoder retries, confidence, memory) in raw_subs next to the outputs, for diagnosing runs that stop producing subtitles. Untick to skip it (same as --no-asr-telemetry).">
+                                    <label class="checkbox-label" data-i18n-title="t2.asrTelemetryTitle" title="Balanced runs keep a per-scene record of the recognizer (timing, decoder retries, confidence, memory) in raw_subs next to the outputs, for diagnosing runs that stop producing subtitles. Untick to skip it (same as --no-asr-telemetry).">
                                         <input type="checkbox" id="asrTelemetry" checked>
-                                        <span>Keep per-scene ASR telemetry (raw_subs)</span>
+                                        <span data-i18n="t2.asrTelemetry">Keep per-scene ASR telemetry (raw_subs)</span>
                                     </label>
                                 </div>
                             </div>
@@ -433,7 +454,7 @@
                                  --model-refresh-audio-minutes. Read by both the Transcription and Ensemble runs. -->
                             <div class="form-row" id="adv-row-5">
                                 <div class="form-group inline-field">
-                                    <label for="modelRefreshAudioMinutes" class="form-label" style="white-space: nowrap;" title="Balanced and Fidelity unload the recognizer and load a fresh instance after this many minutes of scene audio, at a scene boundary (containment for runs that stop producing subtitles late in a long file). 0 = never. Same as --model-refresh-audio-minutes.">Reload recognizer every (minutes of audio):</label>
+                                    <label for="modelRefreshAudioMinutes" class="form-label" style="white-space: nowrap;" data-i18n-title="t2.reloadRecognizerTitle" data-i18n="t2.reloadRecognizer" title="Balanced and Fidelity unload the recognizer and load a fresh instance after this many minutes of scene audio, at a scene boundary (containment for runs that stop producing subtitles late in a long file). 0 = never. Same as --model-refresh-audio-minutes.">Reload recognizer every (minutes of audio):</label>
                                     <input type="number" id="modelRefreshAudioMinutes" class="form-input" value="20" min="0" step="1" style="max-width: 6em;">
                                 </div>
                             </div>
@@ -450,38 +471,38 @@
                                 <!-- Header Row -->
                                 <div class="grid-header">
                                     <div class="col-label"></div>
-                                    <div class="col-pipeline">Pipeline</div>
+                                    <div class="col-pipeline" data-i18n="t3.pipeline">Pipeline</div>
                                     <div class="col-separator"></div>
-                                    <div class="col-sensitivity">Sensitivity</div>
+                                    <div class="col-sensitivity" data-i18n="t3.sensitivity">Sensitivity</div>
                                     <div class="col-separator"></div>
-                                    <div class="col-scene">Scene Detector</div>
-                                    <div class="col-enhancer">Speech Enhancer</div>
-                                    <div class="col-segmenter">Speech Segmenter</div>
+                                    <div class="col-scene" data-i18n="t3.sceneDetector">Scene Detector</div>
+                                    <div class="col-enhancer" data-i18n="t3.speechEnhancer">Speech Enhancer</div>
+                                    <div class="col-segmenter" data-i18n="t3.speechSegmenter">Speech Segmenter</div>
                                     <div class="col-separator"></div>
-                                    <div class="col-model">Model</div>
+                                    <div class="col-model" data-i18n="t3.model">Model</div>
                                     <div class="col-actions"></div>
                                 </div>
 
                                 <!-- Pass 1 Row -->
                                 <div class="grid-row" id="pass1-row">
-                                    <div class="col-label">Pass 1</div>
+                                    <div class="col-label" data-i18n="t3.pass1">Pass 1</div>
                                     <div class="col-pipeline">
                                         <select id="pass1-pipeline" class="form-select compact">
-                                            <optgroup label="Whisper-Based">
+                                            <optgroup data-i18n="t3.optgroupWhisper" label="Whisper-Based">
                                                 <option value="balanced">Balanced</option>
                                                 <option value="fast">Fast</option>
                                                 <option value="faster">Faster</option>
                                                 <option value="fidelity">Fidelity</option>
                                             </optgroup>
-                                            <optgroup label="HuggingFace">
+                                            <optgroup data-i18n="t3.optgroupHuggingFace" label="HuggingFace">
                                                 <option value="transformers">Transformers (HF)</option>
                                             </optgroup>
-                                            <optgroup label="ChronosJAV">
+                                            <optgroup data-i18n="t3.optgroupChronos" label="ChronosJAV">
                                                 <option value="qwen" selected>Qwen3-ASR</option>
                                                 <option value="anime-whisper">Anime-Whisper</option>
                                                 <option value="cohere" disabled>Cohere-Transcribe (not available yet)</option>
                                             </optgroup>
-                                            <optgroup label="External (CrispASR)">
+                                            <optgroup data-i18n="t3.optgroupExternalCrisp" label="External (CrispASR)">
                                                 <option value="crispasr">CrispASR</option>
                                             </optgroup>
                                         </select>
@@ -489,47 +510,47 @@
                                     <div class="col-separator"></div>
                                     <div class="col-sensitivity">
                                         <select id="pass1-sensitivity" class="form-select compact">
-                                            <option value="aggressive" selected>Aggressive</option>
-                                            <option value="balanced">Balanced</option>
-                                            <option value="conservative">Conservative</option>
+                                            <option value="aggressive" selected data-i18n="t3.optAggressive">Aggressive</option>
+                                            <option value="balanced" data-i18n="t3.optBalanced">Balanced</option>
+                                            <option value="conservative" data-i18n="t3.optConservative">Conservative</option>
                                         </select>
                                     </div>
                                     <div class="col-separator"></div>
                                     <div class="col-scene">
                                         <select id="pass1-scene" class="form-select compact">
-                                            <option value="auditok">Auditok</option>
-                                            <option value="silero">Silero</option>
-                                            <option value="semantic" selected>Semantic</option>
-                                            <option value="none">None</option>
+                                            <option value="auditok" data-i18n="t3.optAuditok">Auditok</option>
+                                            <option value="silero" data-i18n="t3.optSilero">Silero</option>
+                                            <option value="semantic" selected data-i18n="t3.optSemantic">Semantic</option>
+                                            <option value="none" data-i18n="t3.optNone">None</option>
                                         </select>
                                     </div>
                                     <div class="col-enhancer">
                                         <select id="pass1-enhancer" class="form-select compact">
-                                            <option value="none" selected>None</option>
-                                            <optgroup label="FFmpeg DSP (Lightweight)">
-                                                <option value="ffmpeg-dsp">Audio Filters...</option>
+                                            <option value="none" selected data-i18n="t3.optNone">None</option>
+                                            <optgroup data-i18n="t3.optgroupFfmpegDsp" label="FFmpeg DSP (Lightweight)">
+                                                <option value="ffmpeg-dsp" data-i18n="t3.optAudioFilters">Audio Filters...</option>
                                             </optgroup>
-                                            <optgroup label="ZipEnhancer (Recommended)">
-                                                <option value="zipenhancer">Torch (GPU)</option>
-                                                <option value="zipenhancer:onnx" disabled class="coming-soon">ONNX (Coming Soon)</option>
+                                            <optgroup data-i18n="t3.optgroupZipEnhancer" label="ZipEnhancer (Recommended)">
+                                                <option value="zipenhancer" data-i18n="t3.optTorchGpu">Torch (GPU)</option>
+                                                <option value="zipenhancer:onnx" disabled class="coming-soon" data-i18n="t3.optOnnxComingSoon">ONNX (Coming Soon)</option>
                                             </optgroup>
-                                            <optgroup label="ClearVoice">
-                                                <option value="clearvoice:MossFormer2_SE_48K" disabled title="Unstable on 8GB VRAM - causes memory fragmentation">MossFormer2 48kHz (Unstable)</option>
-                                                <option value="clearvoice:FRCRN_SE_16K">FRCRN 16kHz</option>
-                                                <option value="clearvoice:MossFormerGAN_SE_16K">MossFormerGAN 16kHz</option>
-                                                <option value="clearvoice:MossFormer2_SS_16K">MossFormer2 SS 16kHz</option>
+                                            <optgroup data-i18n="t3.optgroupClearVoice" label="ClearVoice">
+                                                <option value="clearvoice:MossFormer2_SE_48K" disabled data-i18n="t3.optMossFormer48Unstable" title="Unstable on 8GB VRAM - causes memory fragmentation">MossFormer2 48kHz (Unstable)</option>
+                                                <option value="clearvoice:FRCRN_SE_16K" data-i18n="t3.optFrcrn16">FRCRN 16kHz</option>
+                                                <option value="clearvoice:MossFormerGAN_SE_16K" data-i18n="t3.optMossFormerGan16">MossFormerGAN 16kHz</option>
+                                                <option value="clearvoice:MossFormer2_SS_16K" data-i18n="t3.optMossFormer2Ss16">MossFormer2 SS 16kHz</option>
                                             </optgroup>
-                                            <optgroup label="BS-RoFormer">
-                                                <option value="bs-roformer:vocals" disabled class="coming-soon">Vocals (Coming Soon)</option>
+                                            <optgroup data-i18n="t3.optgroupBsRoFormer" label="BS-RoFormer">
+                                                <option value="bs-roformer:vocals" disabled class="coming-soon" data-i18n="t3.optBsRoformerVocals">Vocals (Coming Soon)</option>
                                             </optgroup>
-                                            <optgroup label="htdemucs (Demucs v4)">
-                                                <option value="htdemucs" title="Isolates the voice from music and effects. Installed with WhisperJAV; its 84 MB model is fetched once on first use, from Meta's site rather than Hugging Face. If it cannot run, the run stops and says so.">Vocals</option>
+                                            <optgroup data-i18n="t3.optgroupHtdemucs" label="htdemucs (Demucs v4)">
+                                                <option value="htdemucs" data-i18n-title="t3.htdemucsTitle" data-i18n="t3.optHtdemucsVocals" title="Isolates the voice from music and effects. Installed with WhisperJAV; its 84 MB model is fetched once on first use, from Meta's site rather than Hugging Face. If it cannot run, the run stops and says so.">Vocals</option>
                                             </optgroup>
                                         </select>
                                         <div class="enhance-for-vad-row" id="pass1-enhance-vad-row" style="display: none;">
-                                            <label class="checkbox-label compact" title="Enhanced audio drives VAD boundaries; original audio is fed to the ASR model">
+                                            <label class="checkbox-label compact" data-i18n-title="t3.enhanceForVadTitle" title="Enhanced audio drives VAD boundaries; original audio is fed to the ASR model">
                                                 <input type="checkbox" id="pass1-enhance-for-vad">
-                                                <span>Enhance for VAD only</span>
+                                                <span data-i18n="t3.enhanceForVadOnly">Enhance for VAD only</span>
                                             </label>
                                         </div>
                                     </div>
@@ -550,9 +571,9 @@
                                             <!-- <option value="whisper-vad-tiny">Whisper VAD (tiny)</option> -->
                                             <!-- <option value="whisper-vad-medium">Whisper VAD (medium)</option> -->
                                             <option value="ten">TEN VAD</option>
-                                            <option value="whisperseg" title="Whisper-encoder VAD trained on Japanese ASMR (ONNX). F1=0.787 on Netflix-GT JAV. For non-Japanese audio, switch to Silero v3.1.">WhisperSeg (JA-ASMR)</option>
-                                            <option value="firered-vad" selected title="FireRedTeam DFSMN VAD (~0.6M params, 100+ languages). Installed with WhisperJAV since v1.9.2.">FireRedVAD</option>
-                                            <option value="none">None</option>
+                                            <option value="whisperseg" data-i18n-title="t3.whispersegTitle" title="Whisper-encoder VAD trained on Japanese ASMR (ONNX). F1=0.787 on Netflix-GT JAV. For non-Japanese audio, switch to Silero v3.1.">WhisperSeg (JA-ASMR)</option>
+                                            <option value="firered-vad" selected data-i18n-title="t3.fireredTitle" title="FireRedTeam DFSMN VAD (~0.6M params, 100+ languages). Installed with WhisperJAV since v1.9.2.">FireRedVAD</option>
+                                            <option value="none" data-i18n="t3.optNone">None</option>
                                         </select>
                                     </div>
                                     <div class="col-separator"></div>
@@ -561,16 +582,16 @@
                                             <option value="large-v2" selected>Large V2</option>
                                             <option value="large-v3">Large V3</option>
                                             <option value="turbo">Turbo</option>
-                                            <option value="TransWithAI/whisper-ja-1.5B-ct2" title="whisper-ja-1.5B Japanese finetune (CTranslate2). Use with the Balanced pipeline — not compatible with the Fidelity (OpenAI Whisper) pipeline.">whisper-ja-1.5B (CT2, JA)</option>
+                                            <option value="TransWithAI/whisper-ja-1.5B-ct2" data-i18n-title="t3.whisperJaTitle" title="whisper-ja-1.5B Japanese finetune (CTranslate2). Use with the Balanced pipeline — not compatible with the Fidelity (OpenAI Whisper) pipeline.">whisper-ja-1.5B (CT2, JA)</option>
                                         </select>
                                     </div>
                                     <div class="col-actions">
                                         <button type="button" class="btn-help-icon" id="guide-pass1"
-                                                title="Parameter Guide" style="display: none;">?</button>
-                                        <button type="button" class="btn btn-secondary btn-compact" id="customize-pass1">
+                                                data-i18n-title="t3.guideTitle" title="Parameter Guide" style="display: none;">?</button>
+                                        <button type="button" class="btn btn-secondary btn-compact" id="customize-pass1" data-i18n="t3.customizeParams">
                                             Customize Parameters
                                         </button>
-                                        <span id="pass1-badge" class="pass-badge default">DEFAULT</span>
+                                        <span id="pass1-badge" class="pass-badge default" data-i18n="t3.badgeDefault">DEFAULT</span>
                                     </div>
                                 </div>
 
@@ -578,49 +599,49 @@
                                 <div class="dsp-effects-panel" id="pass1-dsp-panel" style="display: none;">
                                     <div class="dsp-effects-header">
                                         <span class="dsp-icon">🎛️</span>
-                                        <span class="dsp-title">Audio Filters</span>
-                                        <span class="dsp-hint">Select one or more effects to apply</span>
+                                        <span class="dsp-title" data-i18n="t3.dspTitle">Audio Filters</span>
+                                        <span class="dsp-hint" data-i18n="t3.dspHint">Select one or more effects to apply</span>
                                     </div>
                                     <div class="dsp-effects-grid">
-                                        <label class="dsp-effect-item" title="Normalize loudness to broadcast standard (-16 LUFS)">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.loudnormTitle" title="Normalize loudness to broadcast standard (-16 LUFS)">
                                             <input type="checkbox" name="pass1-dsp" value="loudnorm" checked>
-                                            <span class="dsp-effect-name">Loudness Norm</span>
-                                            <span class="dsp-effect-desc">EBU R128 standard</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.loudnorm">Loudness Norm</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.loudnormDesc">EBU R128 standard</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Normalize audio dynamics while preserving natural sound">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.normalizeTitle" title="Normalize audio dynamics while preserving natural sound">
                                             <input type="checkbox" name="pass1-dsp" value="normalize">
-                                            <span class="dsp-effect-name">Dynamic Norm</span>
-                                            <span class="dsp-effect-desc">Preserve natural sound</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.normalize">Dynamic Norm</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.normalizeDesc">Preserve natural sound</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Reduce volume difference between loud and quiet parts">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.compressTitle" title="Reduce volume difference between loud and quiet parts">
                                             <input type="checkbox" name="pass1-dsp" value="compress">
-                                            <span class="dsp-effect-name">Compress</span>
-                                            <span class="dsp-effect-desc">Dynamic range control</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.compress">Compress</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.compressDesc">Dynamic range control</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Remove background noise using FFT denoising">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.denoiseTitle" title="Remove background noise using FFT denoising">
                                             <input type="checkbox" name="pass1-dsp" value="denoise">
-                                            <span class="dsp-effect-name">Denoise</span>
-                                            <span class="dsp-effect-desc">FFT noise reduction</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.denoise">Denoise</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.denoiseDesc">FFT noise reduction</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Remove low rumble and hum below 80Hz">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.highpassTitle" title="Remove low rumble and hum below 80Hz">
                                             <input type="checkbox" name="pass1-dsp" value="highpass">
-                                            <span class="dsp-effect-name">High-pass</span>
-                                            <span class="dsp-effect-desc">Cut below 80Hz</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.highpass">High-pass</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.highpassDesc">Cut below 80Hz</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Remove high frequency hiss above 8kHz">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.lowpassTitle" title="Remove high frequency hiss above 8kHz">
                                             <input type="checkbox" name="pass1-dsp" value="lowpass">
-                                            <span class="dsp-effect-name">Low-pass</span>
-                                            <span class="dsp-effect-desc">Cut above 8kHz</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.lowpass">Low-pass</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.lowpassDesc">Cut above 8kHz</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Reduce harsh sibilant sounds (s, sh, ch)">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.deessTitle" title="Reduce harsh sibilant sounds (s, sh, ch)">
                                             <input type="checkbox" name="pass1-dsp" value="deess">
-                                            <span class="dsp-effect-name">De-esser</span>
-                                            <span class="dsp-effect-desc">Reduce sibilance</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.deess">De-esser</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.deessDesc">Reduce sibilance</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Increase volume by 3 decibels">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.amplifyTitle" title="Increase volume by 3 decibels">
                                             <input type="checkbox" name="pass1-dsp" value="amplify">
-                                            <span class="dsp-effect-name">Amplify</span>
-                                            <span class="dsp-effect-desc">+3dB boost</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.amplify">Amplify</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.amplifyDesc">+3dB boost</span>
                                         </label>
                                     </div>
                                 </div>
@@ -630,29 +651,29 @@
                                     <div class="col-label">
                                         <label class="checkbox-label">
                                             <input type="checkbox" id="pass2-enabled">
-                                            <span>Pass 2</span>
+                                            <span data-i18n="t3.pass2">Pass 2</span>
                                         </label>
                                     </div>
                                     <div class="col-pipeline">
                                         <select id="pass2-pipeline" class="form-select compact" disabled>
-                                            <optgroup label="Whisper-Based">
+                                            <optgroup data-i18n="t3.optgroupWhisper" label="Whisper-Based">
                                                 <option value="balanced">Balanced</option>
                                                 <option value="fast">Fast</option>
                                                 <option value="faster">Faster</option>
                                                 <option value="fidelity">Fidelity</option>
                                             </optgroup>
-                                            <optgroup label="HuggingFace">
+                                            <optgroup data-i18n="t3.optgroupHuggingFace" label="HuggingFace">
                                                 <option value="transformers">Transformers (HF)</option>
                                             </optgroup>
-                                            <optgroup label="ChronosJAV">
+                                            <optgroup data-i18n="t3.optgroupChronos" label="ChronosJAV">
                                                 <option value="qwen">Qwen3-ASR</option>
                                                 <option value="anime-whisper" selected>Anime-Whisper</option>
                                                 <option value="cohere" disabled>Cohere-Transcribe (not available yet)</option>
                                             </optgroup>
-                                            <optgroup label="External (BYOP)">
+                                            <optgroup data-i18n="t3.optgroupExternalByop" label="External (BYOP)">
                                                 <option value="xxl">XXL Faster Whisper</option>
                                             </optgroup>
-                                            <optgroup label="External (CrispASR)">
+                                            <optgroup data-i18n="t3.optgroupExternalCrisp" label="External (CrispASR)">
                                                 <option value="crispasr">CrispASR</option>
                                             </optgroup>
                                         </select>
@@ -660,47 +681,47 @@
                                     <div class="col-separator"></div>
                                     <div class="col-sensitivity">
                                         <select id="pass2-sensitivity" class="form-select compact" disabled>
-                                            <option value="aggressive" selected>Aggressive</option>
-                                            <option value="balanced">Balanced</option>
-                                            <option value="conservative">Conservative</option>
+                                            <option value="aggressive" selected data-i18n="t3.optAggressive">Aggressive</option>
+                                            <option value="balanced" data-i18n="t3.optBalanced">Balanced</option>
+                                            <option value="conservative" data-i18n="t3.optConservative">Conservative</option>
                                         </select>
                                     </div>
                                     <div class="col-separator"></div>
                                     <div class="col-scene">
                                         <select id="pass2-scene" class="form-select compact" disabled>
-                                            <option value="auditok">Auditok</option>
-                                            <option value="silero">Silero</option>
-                                            <option value="semantic" selected>Semantic</option>
-                                            <option value="none">None</option>
+                                            <option value="auditok" data-i18n="t3.optAuditok">Auditok</option>
+                                            <option value="silero" data-i18n="t3.optSilero">Silero</option>
+                                            <option value="semantic" selected data-i18n="t3.optSemantic">Semantic</option>
+                                            <option value="none" data-i18n="t3.optNone">None</option>
                                         </select>
                                     </div>
                                     <div class="col-enhancer">
                                         <select id="pass2-enhancer" class="form-select compact" disabled>
-                                            <option value="none" selected>None</option>
-                                            <optgroup label="FFmpeg DSP (Lightweight)">
-                                                <option value="ffmpeg-dsp">Audio Filters...</option>
+                                            <option value="none" selected data-i18n="t3.optNone">None</option>
+                                            <optgroup data-i18n="t3.optgroupFfmpegDsp" label="FFmpeg DSP (Lightweight)">
+                                                <option value="ffmpeg-dsp" data-i18n="t3.optAudioFilters">Audio Filters...</option>
                                             </optgroup>
-                                            <optgroup label="ZipEnhancer (Recommended)">
-                                                <option value="zipenhancer">Torch (GPU)</option>
-                                                <option value="zipenhancer:onnx" disabled class="coming-soon">ONNX (Coming Soon)</option>
+                                            <optgroup data-i18n="t3.optgroupZipEnhancer" label="ZipEnhancer (Recommended)">
+                                                <option value="zipenhancer" data-i18n="t3.optTorchGpu">Torch (GPU)</option>
+                                                <option value="zipenhancer:onnx" disabled class="coming-soon" data-i18n="t3.optOnnxComingSoon">ONNX (Coming Soon)</option>
                                             </optgroup>
-                                            <optgroup label="ClearVoice">
-                                                <option value="clearvoice:MossFormer2_SE_48K" disabled title="Unstable on 8GB VRAM - causes memory fragmentation">MossFormer2 48kHz (Unstable)</option>
-                                                <option value="clearvoice:FRCRN_SE_16K">FRCRN 16kHz</option>
-                                                <option value="clearvoice:MossFormerGAN_SE_16K">MossFormerGAN 16kHz</option>
-                                                <option value="clearvoice:MossFormer2_SS_16K">MossFormer2 SS 16kHz</option>
+                                            <optgroup data-i18n="t3.optgroupClearVoice" label="ClearVoice">
+                                                <option value="clearvoice:MossFormer2_SE_48K" disabled data-i18n="t3.optMossFormer48Unstable" title="Unstable on 8GB VRAM - causes memory fragmentation">MossFormer2 48kHz (Unstable)</option>
+                                                <option value="clearvoice:FRCRN_SE_16K" data-i18n="t3.optFrcrn16">FRCRN 16kHz</option>
+                                                <option value="clearvoice:MossFormerGAN_SE_16K" data-i18n="t3.optMossFormerGan16">MossFormerGAN 16kHz</option>
+                                                <option value="clearvoice:MossFormer2_SS_16K" data-i18n="t3.optMossFormer2Ss16">MossFormer2 SS 16kHz</option>
                                             </optgroup>
-                                            <optgroup label="BS-RoFormer">
-                                                <option value="bs-roformer:vocals" disabled class="coming-soon">Vocals (Coming Soon)</option>
+                                            <optgroup data-i18n="t3.optgroupBsRoFormer" label="BS-RoFormer">
+                                                <option value="bs-roformer:vocals" disabled class="coming-soon" data-i18n="t3.optBsRoformerVocals">Vocals (Coming Soon)</option>
                                             </optgroup>
-                                            <optgroup label="htdemucs (Demucs v4)">
-                                                <option value="htdemucs" title="Isolates the voice from music and effects. Installed with WhisperJAV; its 84 MB model is fetched once on first use, from Meta's site rather than Hugging Face. If it cannot run, the run stops and says so.">Vocals</option>
+                                            <optgroup data-i18n="t3.optgroupHtdemucs" label="htdemucs (Demucs v4)">
+                                                <option value="htdemucs" data-i18n-title="t3.htdemucsTitle" data-i18n="t3.optHtdemucsVocals" title="Isolates the voice from music and effects. Installed with WhisperJAV; its 84 MB model is fetched once on first use, from Meta's site rather than Hugging Face. If it cannot run, the run stops and says so.">Vocals</option>
                                             </optgroup>
                                         </select>
                                         <div class="enhance-for-vad-row" id="pass2-enhance-vad-row" style="display: none;">
-                                            <label class="checkbox-label compact" title="Enhanced audio drives VAD boundaries; original audio is fed to the ASR model">
+                                            <label class="checkbox-label compact" data-i18n-title="t3.enhanceForVadTitle" title="Enhanced audio drives VAD boundaries; original audio is fed to the ASR model">
                                                 <input type="checkbox" id="pass2-enhance-for-vad">
-                                                <span>Enhance for VAD only</span>
+                                                <span data-i18n="t3.enhanceForVadOnly">Enhance for VAD only</span>
                                             </label>
                                         </div>
                                     </div>
@@ -720,10 +741,10 @@
                                             <!-- <option value="whisper-vad">Whisper VAD (small)</option> -->
                                             <!-- <option value="whisper-vad-tiny">Whisper VAD (tiny)</option> -->
                                             <!-- <option value="whisper-vad-medium">Whisper VAD (medium)</option> -->
-                                            <option value="ten" selected title="TEN VAD — pass 2 default for segmentation diversity vs pass 1's FireRedVAD.">TEN VAD (default)</option>
-                                            <option value="whisperseg" title="Whisper-encoder VAD trained on Japanese ASMR (ONNX). F1=0.787 on Netflix-GT JAV. For non-Japanese audio, switch to Silero v3.1.">WhisperSeg (JA-ASMR)</option>
-                                            <option value="firered-vad" title="FireRedTeam DFSMN VAD (~0.6M params, 100+ languages). Installed with WhisperJAV since v1.9.2.">FireRedVAD</option>
-                                            <option value="none">None</option>
+                                            <option value="ten" selected data-i18n-title="t3.tenDefaultTitle" title="TEN VAD — pass 2 default for segmentation diversity vs pass 1's FireRedVAD.">TEN VAD (default)</option>
+                                            <option value="whisperseg" data-i18n-title="t3.whispersegTitle" title="Whisper-encoder VAD trained on Japanese ASMR (ONNX). F1=0.787 on Netflix-GT JAV. For non-Japanese audio, switch to Silero v3.1.">WhisperSeg (JA-ASMR)</option>
+                                            <option value="firered-vad" data-i18n-title="t3.fireredTitle" title="FireRedTeam DFSMN VAD (~0.6M params, 100+ languages). Installed with WhisperJAV since v1.9.2.">FireRedVAD</option>
+                                            <option value="none" data-i18n="t3.optNone">None</option>
                                         </select>
                                     </div>
                                     <div class="col-separator"></div>
@@ -737,11 +758,11 @@
                                     </div>
                                     <div class="col-actions">
                                         <button type="button" class="btn-help-icon" id="guide-pass2"
-                                                title="Parameter Guide" style="display: none;">?</button>
-                                        <button type="button" class="btn btn-secondary btn-compact" id="customize-pass2" disabled>
+                                                data-i18n-title="t3.guideTitle" title="Parameter Guide" style="display: none;">?</button>
+                                        <button type="button" class="btn btn-secondary btn-compact" id="customize-pass2" data-i18n="t3.customizeParams" disabled>
                                             Customize Parameters
                                         </button>
-                                        <span id="pass2-badge" class="pass-badge default">DEFAULT</span>
+                                        <span id="pass2-badge" class="pass-badge default" data-i18n="t3.badgeDefault">DEFAULT</span>
                                     </div>
                                 </div>
 
@@ -749,49 +770,49 @@
                                 <div class="dsp-effects-panel" id="pass2-dsp-panel" style="display: none;">
                                     <div class="dsp-effects-header">
                                         <span class="dsp-icon">🎛️</span>
-                                        <span class="dsp-title">Audio Filters</span>
-                                        <span class="dsp-hint">Select one or more effects to apply</span>
+                                        <span class="dsp-title" data-i18n="t3.dspTitle">Audio Filters</span>
+                                        <span class="dsp-hint" data-i18n="t3.dspHint">Select one or more effects to apply</span>
                                     </div>
                                     <div class="dsp-effects-grid">
-                                        <label class="dsp-effect-item" title="Normalize loudness to broadcast standard (-16 LUFS)">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.loudnormTitle" title="Normalize loudness to broadcast standard (-16 LUFS)">
                                             <input type="checkbox" name="pass2-dsp" value="loudnorm" checked>
-                                            <span class="dsp-effect-name">Loudness Norm</span>
-                                            <span class="dsp-effect-desc">EBU R128 standard</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.loudnorm">Loudness Norm</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.loudnormDesc">EBU R128 standard</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Normalize audio dynamics while preserving natural sound">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.normalizeTitle" title="Normalize audio dynamics while preserving natural sound">
                                             <input type="checkbox" name="pass2-dsp" value="normalize">
-                                            <span class="dsp-effect-name">Dynamic Norm</span>
-                                            <span class="dsp-effect-desc">Preserve natural sound</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.normalize">Dynamic Norm</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.normalizeDesc">Preserve natural sound</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Reduce volume difference between loud and quiet parts">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.compressTitle" title="Reduce volume difference between loud and quiet parts">
                                             <input type="checkbox" name="pass2-dsp" value="compress">
-                                            <span class="dsp-effect-name">Compress</span>
-                                            <span class="dsp-effect-desc">Dynamic range control</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.compress">Compress</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.compressDesc">Dynamic range control</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Remove background noise using FFT denoising">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.denoiseTitle" title="Remove background noise using FFT denoising">
                                             <input type="checkbox" name="pass2-dsp" value="denoise">
-                                            <span class="dsp-effect-name">Denoise</span>
-                                            <span class="dsp-effect-desc">FFT noise reduction</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.denoise">Denoise</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.denoiseDesc">FFT noise reduction</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Remove low rumble and hum below 80Hz">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.highpassTitle" title="Remove low rumble and hum below 80Hz">
                                             <input type="checkbox" name="pass2-dsp" value="highpass">
-                                            <span class="dsp-effect-name">High-pass</span>
-                                            <span class="dsp-effect-desc">Cut below 80Hz</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.highpass">High-pass</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.highpassDesc">Cut below 80Hz</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Remove high frequency hiss above 8kHz">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.lowpassTitle" title="Remove high frequency hiss above 8kHz">
                                             <input type="checkbox" name="pass2-dsp" value="lowpass">
-                                            <span class="dsp-effect-name">Low-pass</span>
-                                            <span class="dsp-effect-desc">Cut above 8kHz</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.lowpass">Low-pass</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.lowpassDesc">Cut above 8kHz</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Reduce harsh sibilant sounds (s, sh, ch)">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.deessTitle" title="Reduce harsh sibilant sounds (s, sh, ch)">
                                             <input type="checkbox" name="pass2-dsp" value="deess">
-                                            <span class="dsp-effect-name">De-esser</span>
-                                            <span class="dsp-effect-desc">Reduce sibilance</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.deess">De-esser</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.deessDesc">Reduce sibilance</span>
                                         </label>
-                                        <label class="dsp-effect-item" title="Increase volume by 3 decibels">
+                                        <label class="dsp-effect-item" data-i18n-title="t3.dsp.amplifyTitle" title="Increase volume by 3 decibels">
                                             <input type="checkbox" name="pass2-dsp" value="amplify">
-                                            <span class="dsp-effect-name">Amplify</span>
-                                            <span class="dsp-effect-desc">+3dB boost</span>
+                                            <span class="dsp-effect-name" data-i18n="t3.dsp.amplify">Amplify</span>
+                                            <span class="dsp-effect-desc" data-i18n="t3.dsp.amplifyDesc">+3dB boost</span>
                                         </label>
                                     </div>
                                 </div>
@@ -799,22 +820,28 @@
                                 <!-- BYOP Settings Row (shown when XXL Faster Whisper selected as Pass 2) -->
                                 <div class="byop-settings-panel" id="byop-settings-panel" style="display: none;">
                                     <div class="byop-settings-header">
-                                        <span class="byop-title">XXL Faster Whisper</span>
-                                        <span class="byop-hint">Provide the path to your locally installed executable</span>
+                                        <span class="byop-title" data-i18n="t3.byopTitle">XXL Faster Whisper</span>
+                                        <span class="byop-hint" data-i18n="t3.byopHint">Provide the path to your locally installed executable</span>
                                     </div>
                                     <div class="byop-settings-row">
-                                        <label class="byop-label" for="xxl-exe-path">Executable</label>
+                                        <label class="byop-label" for="xxl-exe-path" data-i18n="t1.executable">Executable</label>
                                         <input type="text" id="xxl-exe-path" class="form-input byop-path-input"
+                                               data-i18n-placeholder="t3.xxlExePlaceholder"
                                                placeholder="Path to faster-whisper-xxl.exe" readonly
+                                               data-i18n-title="t3.xxlExeClickTitle"
                                                title="Click Browse to select the faster-whisper-xxl executable">
                                         <button type="button" class="btn btn-secondary btn-compact" id="xxl-browse-btn"
+                                                data-i18n="destination.browse"
+                                                data-i18n-title="t3.xxlBrowseTitle"
                                                 title="Browse for faster-whisper-xxl executable">Browse</button>
                                     </div>
                                     <div class="byop-settings-row">
-                                        <label class="byop-label" for="xxl-extra-args">Extra Args</label>
+                                        <label class="byop-label" for="xxl-extra-args" data-i18n="t1.extraArgs">Extra Args</label>
                                         <input type="text" id="xxl-extra-args" class="form-input byop-args-input"
                                                value="--model large-v3 --verbose True --standard_asia"
+                                               data-i18n-placeholder="t3.xxlArgsPlaceholder"
                                                placeholder="e.g. --model large-v3 --verbose --standard_asia"
+                                               data-i18n-title="t3.xxlArgsTitle"
                                                title="Additional command-line arguments passed directly to XXL">
                                     </div>
                                 </div>
@@ -824,40 +851,46 @@
                                      Backend is chosen via the per-pass Model column. -->
                                 <div class="byop-settings-panel" id="crispasr-settings-panel" style="display: none;">
                                     <div class="byop-settings-header">
-                                        <span class="byop-title">CrispASR (external provider)</span>
-                                        <span class="byop-hint">Backend is selected in the Model column. Exe path is shared across passes.</span>
+                                        <span class="byop-title" data-i18n="t3.crispasrTitle">CrispASR (external provider)</span>
+                                        <span class="byop-hint" data-i18n="t3.crispasrHint">Backend is selected in the Model column. Exe path is shared across passes.</span>
                                     </div>
                                     <div class="byop-settings-row">
-                                        <label class="byop-label" for="crispasr-exe-path">Executable</label>
+                                        <label class="byop-label" for="crispasr-exe-path" data-i18n="t1.executable">Executable</label>
                                         <input type="text" id="crispasr-exe-path" class="form-input byop-path-input"
+                                               data-i18n-placeholder="t1.crispasrExePlaceholder"
                                                placeholder="Path to the crispasr executable" readonly
+                                               data-i18n-title="t1.crispasrExeClickTitle"
                                                title="Click Browse to select the crispasr executable">
                                         <button type="button" class="btn btn-secondary btn-compact" id="crispasr-browse-btn"
+                                                data-i18n="destination.browse"
+                                                data-i18n-title="t1.crispasrExeBrowseTitle"
                                                 title="Browse for the crispasr executable">Browse</button>
                                     </div>
                                     <div class="byop-settings-row">
-                                        <label class="byop-label" for="crispasr-extra-args">Extra Args</label>
+                                        <label class="byop-label" for="crispasr-extra-args" data-i18n="t1.extraArgs">Extra Args</label>
                                         <input type="text" id="crispasr-extra-args" class="form-input byop-args-input"
+                                               data-i18n-placeholder="t1.crispasrArgsPlaceholder"
                                                placeholder="e.g. --vad --split-on-punct"
+                                               data-i18n-title="t1.crispasrArgsTitle"
                                                title="Additional command-line arguments passed verbatim to crispasr">
                                     </div>
                                 </div>
 
                                 <!-- Merge Strategy Row -->
                                 <div class="grid-row" id="merge-row">
-                                    <div class="col-label">Merge</div>
+                                    <div class="col-label" data-i18n="t3.merge">Merge</div>
                                     <div class="col-merge">
                                         <select id="merge-strategy" class="form-select merge-select" disabled>
-                                            <option value="pass1_primary" selected>Pass 1 + Fill From Pass 2</option>
-                                            <option value="smart_merge">Smart Merge (Best Quality)</option>
-                                            <option value="full_merge">Full Merge (All Lines)</option>
-                                            <option value="pass2_primary">Pass 2 + Fill From Pass 1</option>
-                                            <option value="pass1_overlap">Pass 1 + Fill (30% Overlap)</option>
-                                            <option value="pass2_overlap">Pass 2 + Fill (30% Overlap)</option>
+                                            <option value="pass1_primary" selected data-i18n="t3.mergePass1Primary">Pass 1 + Fill From Pass 2</option>
+                                            <option value="smart_merge" data-i18n="t3.mergeSmart">Smart Merge (Best Quality)</option>
+                                            <option value="full_merge" data-i18n="t3.mergeFull">Full Merge (All Lines)</option>
+                                            <option value="pass2_primary" data-i18n="t3.mergePass2Primary">Pass 2 + Fill From Pass 1</option>
+                                            <option value="pass1_overlap" data-i18n="t3.mergePass1Overlap">Pass 1 + Fill (30% Overlap)</option>
+                                            <option value="pass2_overlap" data-i18n="t3.mergePass2Overlap">Pass 2 + Fill (30% Overlap)</option>
                                         </select>
-                                        <label class="checkbox-label" style="margin-left: 16px; white-space: nowrap;" title="Complete each file fully before starting the next. Slower (reloads models per file) but delivers results incrementally.">
+                                        <label class="checkbox-label" style="margin-left: 16px; white-space: nowrap;" data-i18n-title="t3.finishEachFileTitle" title="Complete each file fully before starting the next. Slower (reloads models per file) but delivers results incrementally.">
                                             <input type="checkbox" id="ensemble-serial">
-                                            <span>Finish each file</span>
+                                            <span data-i18n="t3.finishEachFile">Finish each file</span>
                                         </label>
                                     </div>
                                 </div>
@@ -867,75 +900,77 @@
                                     <div class="translate-checkbox-group">
                                         <label class="checkbox-label">
                                             <input type="checkbox" id="ensembleTranslateAfter">
-                                            <span>AI-translate</span>
+                                            <span data-i18n="t3.aiTranslate">AI-translate</span>
                                         </label>
                                     </div>
                                     <div class="translate-inline-settings" id="ensembleTranslateSettings">
                                         <select id="ensembleTranslateProvider" class="form-select compact" title="Translation provider">
-                                            <option value="" disabled selected>— Select a Provider —</option>
-                                            <optgroup label="Local LLM">
+                                            <option value="" disabled selected data-i18n="t3.selectProvider">— Select a Provider —</option>
+                                            <optgroup data-i18n="t3.optgroupLocalLlm" label="Local LLM">
                                                 <option value="ollama">Ollama</option>
-                                                <option value="local">llama-cpp (deprecated)</option>
+                                                <option value="local" data-i18n="t3.providerLlamaCpp">llama-cpp (deprecated)</option>
                                             </optgroup>
-                                            <optgroup label="Cloud AI">
+                                            <optgroup data-i18n="t3.optgroupCloudAi" label="Cloud AI">
                                                 <option value="deepseek">DeepSeek</option>
                                                 <option value="gemini">Gemini</option>
                                                 <option value="claude">Claude</option>
                                                 <option value="gpt">GPT</option>
                                                 <option value="openrouter">OpenRouter</option>
-                                                <option value="glm">GLM (Zhipu AI)</option>
+                                                <option value="glm" data-i18n="t3.providerGlm">GLM (Zhipu AI)</option>
                                                 <option value="groq">Groq</option>
-                                                <option value="custom">Custom (OpenAI-compatible)</option>
+                                                <option value="custom" data-i18n="t3.providerCustom">Custom (OpenAI-compatible)</option>
                                             </optgroup>
                                         </select>
                                         <select id="ensembleTranslateModel" class="form-select compact" title="Model">
-                                            <option value="">Default</option>
+                                            <option value="" data-i18n="t3.defaultModel">Default</option>
                                         </select>
                                         <input type="text" id="ensembleTranslateModelOverride" class="form-input model-override-input"
+                                               data-i18n-placeholder="t3.modelOverridePlaceholder"
                                                placeholder="Model override (optional)"
+                                               data-i18n-title="t3.modelOverrideTitle"
                                                title="Custom model path or name. Leave empty to use selected model.">
-                                        <button type="button" class="btn btn-secondary btn-compact" id="ensembleTranslateSettingsBtn" title="Translation Settings">
+                                        <button type="button" class="btn btn-secondary btn-compact" id="ensembleTranslateSettingsBtn" data-i18n-title="t3.translationSettings" data-i18n="t3.translationSettings" title="Translation Settings">
                                             Translation Settings
                                         </button>
                                     </div>
                                     <div id="ensembleOllamaPanel" class="ollama-onboarding-panel" style="display:none">
                                         <div id="ensembleOllamaChecking" class="ollama-state ollama-state-checking" style="display:none">
                                             <span class="ollama-checking-spinner"></span>
-                                            <span class="ollama-checking-text">Looking for Ollama server...</span>
+                                            <span class="ollama-checking-text" data-i18n="t3.ollamaChecking">Looking for Ollama server...</span>
                                         </div>
                                         <div id="ensembleOllamaNotInstalled" class="ollama-state" style="display:none">
                                             <div class="ollama-state-content">
-                                                <div class="ollama-state-title">Ollama not found</div>
-                                                <div class="ollama-state-text">
+                                                <div class="ollama-state-title" data-i18n="t3.ollamaNotFound">Ollama not found</div>
+                                                <div class="ollama-state-text" data-i18n="t3.ollamaNotFoundText">
                                                     Ollama is a free AI tool that runs translations on your computer. No account or API key needed.
                                                 </div>
                                                 <div class="ollama-state-actions">
-                                                    <a href="https://ollama.com" target="_blank" class="btn btn-primary btn-compact">Download Ollama</a>
-                                                    <button type="button" class="btn btn-secondary btn-compact ollama-check-btn">Check Again</button>
+                                                    <a href="https://ollama.com" target="_blank" class="btn btn-primary btn-compact" data-i18n="t3.downloadOllama">Download Ollama</a>
+                                                    <button type="button" class="btn btn-secondary btn-compact ollama-check-btn" data-i18n="t3.checkAgain">Check Again</button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div id="ensembleOllamaNoModel" class="ollama-state" style="display:none">
                                             <div class="ollama-state-content">
-                                                <div class="ollama-state-title">Almost ready — download a translation model</div>
+                                                <div class="ollama-state-title" data-i18n="t3.ollamaNoModel">Almost ready — download a translation model</div>
                                                 <div class="ollama-recommended-model">
-                                                    Recommended: <strong id="ensembleRecModel">gemma3:4b</strong>
+                                                    <span data-i18n="t3.recommended">Recommended: </span><strong id="ensembleRecModel">gemma3:4b</strong>
                                                     <span id="ensembleRecSize">(2.5 GB)</span>
                                                 </div>
                                                 <div class="ollama-copy-command">
                                                     <code id="ensembleOllamaCmd">ollama pull gemma3:4b</code>
-                                                    <button type="button" class="btn-copy" title="Copy command">&#x1F4CB;</button>
+                                                    <button type="button" class="btn-copy" data-i18n-title="t3.copyCommand" title="Copy command">&#x1F4CB;</button>
                                                 </div>
-                                                <div class="ollama-state-hint">Run this in a terminal, then click Check Again.</div>
-                                                <button type="button" class="btn btn-secondary btn-compact ollama-check-btn">Check Again</button>
+                                                <div class="ollama-state-hint" data-i18n="t3.ollamaRunHint">Run this in a terminal, then click Check Again.</div>
+                                                <button type="button" class="btn btn-secondary btn-compact ollama-check-btn" data-i18n="t3.checkAgain">Check Again</button>
                                             </div>
                                         </div>
                                         <div id="ensembleOllamaReady" class="ollama-state ollama-state-ready" style="display:none">
                                             <span class="ollama-ready-dot"></span>
-                                            <span class="ollama-ready-text">Ollama server connected</span>
+                                            <span class="ollama-ready-text" data-i18n="t3.ollamaReady">Ollama server connected</span>
                                         </div>
                                     </div>
-                                    <div id="ensembleDeprecationHint" class="provider-deprecation-hint" style="display:none">
+                                    <div id="ensembleDeprecationHint" class="provider-deprecation-hint" style="display:none" data-i18n="t3.deprecationHint">
                                         This backend is being retired in v1.9.0. Consider switching to Ollama.
                                     </div>
                                 </div>
@@ -958,74 +993,74 @@
                                 <div class="translator-section translator-compact-section">
                                     <div class="translator-provider-grid">
                                         <div class="form-group">
-                                            <label for="translatorProvider" class="form-label">Provider:</label>
+                                            <label for="translatorProvider" class="form-label" data-i18n="t4.provider">Provider:</label>
                                             <select id="translatorProvider" class="form-select">
-                                                <option value="" disabled selected>— Select a Provider —</option>
-                                                <optgroup label="Local LLM">
+                                                <option value="" disabled selected data-i18n="t3.selectProvider">— Select a Provider —</option>
+                                                <optgroup data-i18n="t3.optgroupLocalLlm" label="Local LLM">
                                                     <option value="ollama">Ollama</option>
-                                                    <option value="local">llama-cpp (deprecated)</option>
+                                                    <option value="local" data-i18n="t3.providerLlamaCpp">llama-cpp (deprecated)</option>
                                                 </optgroup>
-                                                <optgroup label="Cloud AI">
+                                                <optgroup data-i18n="t3.optgroupCloudAi" label="Cloud AI">
                                                     <option value="deepseek">DeepSeek</option>
                                                     <option value="gemini">Gemini</option>
                                                     <option value="claude">Claude</option>
                                                     <option value="gpt">GPT</option>
                                                     <option value="openrouter">OpenRouter</option>
-                                                    <option value="glm">GLM (Zhipu AI)</option>
+                                                    <option value="glm" data-i18n="t3.providerGlm">GLM (Zhipu AI)</option>
                                                     <option value="groq">Groq</option>
-                                                    <option value="custom">Custom (OpenAI-compatible)</option>
+                                                    <option value="custom" data-i18n="t3.providerCustom">Custom (OpenAI-compatible)</option>
                                                 </optgroup>
                                             </select>
                                         </div>
                                         <div id="srtOllamaPanel" class="ollama-onboarding-panel" style="display:none">
                                             <div id="srtOllamaChecking" class="ollama-state ollama-state-checking" style="display:none">
                                                 <span class="ollama-checking-spinner"></span>
-                                                <span class="ollama-checking-text">Looking for Ollama server...</span>
+                                                <span class="ollama-checking-text" data-i18n="t3.ollamaChecking">Looking for Ollama server...</span>
                                             </div>
                                             <div id="srtOllamaNotInstalled" class="ollama-state" style="display:none">
                                                 <div class="ollama-state-content">
-                                                    <div class="ollama-state-title">Ollama not found</div>
-                                                    <div class="ollama-state-text">
+                                                    <div class="ollama-state-title" data-i18n="t3.ollamaNotFound">Ollama not found</div>
+                                                    <div class="ollama-state-text" data-i18n="t3.ollamaNotFoundText">
                                                         Ollama is a free AI tool that runs translations on your computer. No account or API key needed.
                                                     </div>
                                                     <div class="ollama-state-actions">
-                                                        <a href="https://ollama.com" target="_blank" class="btn btn-primary btn-compact">Download Ollama</a>
-                                                        <button type="button" class="btn btn-secondary btn-compact ollama-check-btn">Check Again</button>
+                                                        <a href="https://ollama.com" target="_blank" class="btn btn-primary btn-compact" data-i18n="t3.downloadOllama">Download Ollama</a>
+                                                        <button type="button" class="btn btn-secondary btn-compact ollama-check-btn" data-i18n="t3.checkAgain">Check Again</button>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div id="srtOllamaNoModel" class="ollama-state" style="display:none">
                                                 <div class="ollama-state-content">
-                                                    <div class="ollama-state-title">Almost ready — download a translation model</div>
+                                                    <div class="ollama-state-title" data-i18n="t3.ollamaNoModel">Almost ready — download a translation model</div>
                                                     <div class="ollama-recommended-model">
-                                                        Recommended: <strong id="srtRecModel">gemma3:4b</strong>
+                                                        <span data-i18n="t3.recommended">Recommended: </span><strong id="srtRecModel">gemma3:4b</strong>
                                                         <span id="srtRecSize">(2.5 GB)</span>
                                                     </div>
                                                     <div class="ollama-copy-command">
                                                         <code id="srtOllamaCmd">ollama pull gemma3:4b</code>
-                                                        <button type="button" class="btn-copy" title="Copy command">&#x1F4CB;</button>
+                                                        <button type="button" class="btn-copy" data-i18n-title="t3.copyCommand" title="Copy command">&#x1F4CB;</button>
                                                     </div>
-                                                    <div class="ollama-state-hint">Run this in a terminal, then click Check Again.</div>
-                                                    <button type="button" class="btn btn-secondary btn-compact ollama-check-btn">Check Again</button>
+                                                    <div class="ollama-state-hint" data-i18n="t3.ollamaRunHint">Run this in a terminal, then click Check Again.</div>
+                                                    <button type="button" class="btn btn-secondary btn-compact ollama-check-btn" data-i18n="t3.checkAgain">Check Again</button>
                                                 </div>
                                             </div>
                                             <div id="srtOllamaReady" class="ollama-state ollama-state-ready" style="display:none">
                                                 <span class="ollama-ready-dot"></span>
-                                                <span class="ollama-ready-text">Ollama server connected</span>
+                                                <span class="ollama-ready-text" data-i18n="t3.ollamaReady">Ollama server connected</span>
                                             </div>
                                         </div>
-                                        <div id="srtDeprecationHint" class="provider-deprecation-hint" style="display:none">
+                                        <div id="srtDeprecationHint" class="provider-deprecation-hint" style="display:none" data-i18n="t3.deprecationHint">
                                             This backend is being retired in v1.9.0. Consider switching to Ollama.
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorModel" class="form-label">Model:</label>
+                                            <label for="translatorModel" class="form-label" data-i18n="t4.model">Model:</label>
                                             <select id="translatorModel" class="form-select">
-                                                <option value="">Default</option>
+                                                <option value="" data-i18n="t3.defaultModel">Default</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorCustomModel" class="form-label">Override/Custom Model:</label>
-                                            <input type="text" id="translatorCustomModel" class="form-input" placeholder="Optional model override">
+                                            <label for="translatorCustomModel" class="form-label" data-i18n="t4.overrideCustomModel">Override/Custom Model:</label>
+                                            <input type="text" id="translatorCustomModel" class="form-input" data-i18n-placeholder="t4.optionalOverride" placeholder="Optional model override">
                                         </div>
                                     </div>
                                 </div>
@@ -1034,14 +1069,14 @@
                                 <div id="translatorApiKeyRow" class="translator-section translator-compact-section">
                                     <div class="translator-apikey-row">
                                         <div class="form-group translator-api-key-group">
-                                            <label for="translatorApiKey" class="form-label">API Key:</label>
+                                            <label for="translatorApiKey" class="form-label" data-i18n="t4.apiKey">API Key:</label>
                                             <div class="input-with-status">
-                                                <input type="password" id="translatorApiKey" class="form-input" placeholder="Enter API key or use environment variable">
+                                                <input type="password" id="translatorApiKey" class="form-input" data-i18n-placeholder="t4.apiKeyPlaceholder" placeholder="Enter API key or use environment variable">
                                                 <span id="translatorApiStatus" class="api-status"></span>
                                             </div>
                                         </div>
                                         <div class="form-group translator-test-btn-group">
-                                            <button type="button" class="btn btn-secondary" id="translatorTestConnection">Test Connection</button>
+                                            <button type="button" class="btn btn-secondary" id="translatorTestConnection" data-i18n="t4.testConnection">Test Connection</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1050,7 +1085,7 @@
                                 <div class="translator-section translator-compact-section">
                                     <div class="translator-settings-grid">
                                         <div class="form-group">
-                                            <label for="translatorSourceLang" class="form-label">Source Language:</label>
+                                            <label for="translatorSourceLang" class="form-label" data-i18n="t4.sourceLanguage">Source Language:</label>
                                             <select id="translatorSourceLang" class="form-select">
                                                 <option value="japanese" selected>Japanese</option>
                                                 <option value="korean">Korean</option>
@@ -1059,7 +1094,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorTargetLang" class="form-label">Target Language:</label>
+                                            <label for="translatorTargetLang" class="form-label" data-i18n="t4.targetLanguage">Target Language:</label>
                                             <select id="translatorTargetLang" class="form-select">
                                                 <option value="english" selected>English</option>
                                                 <option value="chinese">Chinese</option>
@@ -1073,11 +1108,11 @@
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorTone" class="form-label">Tone/Style:</label>
+                                            <label for="translatorTone" class="form-label" data-i18n="t4.toneStyle">Tone/Style:</label>
                                             <select id="translatorTone" class="form-select">
-                                                <option value="standard" selected>Standard</option>
-                                                <option value="contextual" title="Explicit language only where the original line is explicit — neutral dialogue stays neutral. Local instructions, not overridden by the online gist.">Adult (contextual)</option>
-                                                <option value="pornify" title="Everything explicit — also sexualizes neutral dialogue by design.">Adult/Explicit</option>
+                                                <option value="standard" selected data-i18n="t4.toneStandard">Standard</option>
+                                                <option value="contextual" data-i18n-title="t4.toneContextualTitle" data-i18n="t4.toneContextual" title="Explicit language only where the original line is explicit — neutral dialogue stays neutral. Local instructions, not overridden by the online gist.">Adult (contextual)</option>
+                                                <option value="pornify" data-i18n-title="t4.tonePornifyTitle" data-i18n="t4.tonePornify" title="Everything explicit — also sexualizes neutral dialogue by design.">Adult/Explicit</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1087,40 +1122,40 @@
                                 <details class="translator-section translator-advanced-section">
                                     <summary class="collapsible-header">
                                         <span class="collapse-icon">▶</span>
-                                        Advanced Settings
+                                        <span data-i18n="t4.advancedSettings">Advanced Settings</span>
                                     </summary>
                                     <div class="translator-advanced-grid">
                                         <div class="form-group">
-                                            <label for="translatorMovieTitle" class="form-label">Movie Title:</label>
-                                            <input type="text" id="translatorMovieTitle" class="form-input" placeholder="e.g., ABC-123">
+                                            <label for="translatorMovieTitle" class="form-label" data-i18n="t4.movieTitle">Movie Title:</label>
+                                            <input type="text" id="translatorMovieTitle" class="form-input" data-i18n-placeholder="t4.movieTitlePlaceholder" placeholder="e.g., ABC-123">
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorNames" class="form-label">Names (one per line):</label>
-                                            <textarea id="translatorNames" class="form-textarea" rows="2" placeholder="Character/actress names"></textarea>
+                                            <label for="translatorNames" class="form-label" data-i18n="t4.names">Names (one per line):</label>
+                                            <textarea id="translatorNames" class="form-textarea" rows="2" data-i18n-placeholder="t4.namesPlaceholder" placeholder="Character/actress names"></textarea>
                                         </div>
                                         <div class="form-group" style="grid-column: span 2;">
-                                            <label for="translatorPlot" class="form-label">Plot Summary:</label>
-                                            <textarea id="translatorPlot" class="form-textarea" rows="2" placeholder="Brief plot description for context..."></textarea>
+                                            <label for="translatorPlot" class="form-label" data-i18n="t4.plotSummary">Plot Summary:</label>
+                                            <textarea id="translatorPlot" class="form-textarea" rows="2" data-i18n-placeholder="t4.plotPlaceholder" placeholder="Brief plot description for context..."></textarea>
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorSceneThreshold" class="form-label">Scene Threshold (sec):</label>
+                                            <label for="translatorSceneThreshold" class="form-label" data-i18n="t4.sceneThreshold">Scene Threshold (sec):</label>
                                             <input type="number" id="translatorSceneThreshold" class="form-input" value="60" min="1" max="300">
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorMaxBatchSize" class="form-label">Max Batch Size:</label>
+                                            <label for="translatorMaxBatchSize" class="form-label" data-i18n="t4.maxBatchSize">Max Batch Size:</label>
                                             <input type="number" id="translatorMaxBatchSize" class="form-input" value="30" min="1" max="100">
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorMaxRetries" class="form-label">Max Retries:</label>
+                                            <label for="translatorMaxRetries" class="form-label" data-i18n="t4.maxRetries">Max Retries:</label>
                                             <input type="number" id="translatorMaxRetries" class="form-input" value="3" min="1" max="10">
                                         </div>
                                         <div class="form-group">
-                                            <label for="translatorRateLimit" class="form-label">Rate Limit (req/min):</label>
-                                            <input type="number" id="translatorRateLimit" class="form-input" placeholder="No limit" min="1" max="1000">
+                                            <label for="translatorRateLimit" class="form-label" data-i18n="t4.rateLimit">Rate Limit (req/min):</label>
+                                            <input type="number" id="translatorRateLimit" class="form-input" data-i18n-placeholder="t4.rateLimitPlaceholder" placeholder="No limit" min="1" max="1000">
                                         </div>
                                         <div class="form-group" style="grid-column: span 2;">
-                                            <label for="translatorCustomEndpoint" class="form-label">Custom Endpoint URL:</label>
-                                            <input type="text" id="translatorCustomEndpoint" class="form-input" placeholder="https://api.example.com/v1 (for OpenAI-compatible APIs)">
+                                            <label for="translatorCustomEndpoint" class="form-label" data-i18n="t4.customEndpoint">Custom Endpoint URL:</label>
+                                            <input type="text" id="translatorCustomEndpoint" class="form-input" data-i18n-placeholder="t4.customEndpointPlaceholder" placeholder="https://api.example.com/v1 (for OpenAI-compatible APIs)">
                                         </div>
                                     </div>
                                 </details>
@@ -1131,13 +1166,13 @@
                                         <div class="translator-progress-bar">
                                             <div class="translator-progress-fill" id="translatorProgressFill"></div>
                                         </div>
-                                        <span class="translator-status-label" id="translatorStatusLabel">Idle</span>
+                                        <span class="translator-status-label" id="translatorStatusLabel" data-i18n="t4.idle">Idle</span>
                                     </div>
                                 </div>
                                 <div class="translator-controls-section">
                                     <div class="translator-button-group">
-                                        <button type="button" class="btn btn-primary btn-lg" id="translatorStartBtn" disabled>Start</button>
-                                        <button type="button" class="btn btn-secondary btn-lg" id="translatorCancelBtn" disabled>Cancel</button>
+                                        <button type="button" class="btn btn-primary btn-lg" id="translatorStartBtn" data-i18n="t4.start" disabled>Start</button>
+                                        <button type="button" class="btn btn-secondary btn-lg" id="translatorCancelBtn" data-i18n="t4.cancel" disabled>Cancel</button>
                                     </div>
                                 </div>
                             </div>
@@ -1155,15 +1190,15 @@
                         <div class="progress-bar" id="progressBar">
                             <div class="progress-fill" id="progressFill"></div>
                         </div>
-                        <span class="status-label" id="statusLabel">Idle</span>
+                        <span class="status-label" id="statusLabel" data-i18n="run.idle">Idle</span>
                     </div>
 
                     <!-- Control Buttons -->
                     <div class="button-group">
-                        <button type="button" class="btn btn-primary btn-lg" id="startBtn">
+                        <button type="button" class="btn btn-primary btn-lg" id="startBtn" data-i18n="run.start">
                             Start
                         </button>
-                        <button type="button" class="btn btn-secondary btn-lg" id="cancelBtn" disabled>
+                        <button type="button" class="btn btn-secondary btn-lg" id="cancelBtn" data-i18n="run.cancel" disabled>
                             Cancel
                         </button>
                     </div>
@@ -1173,20 +1208,20 @@
             <!-- Console Section -->
             <section class="section console-section">
                 <div class="section-header">
-                    <h2>Console</h2>
+                    <h2 data-i18n="console.title">Console</h2>
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <label class="checkbox-label" title="Keep the console scrolled to the newest line">
+                        <label class="checkbox-label" data-i18n-title="console.autoScrollTitle" title="Keep the console scrolled to the newest line">
                             <input type="checkbox" id="consoleAutoScroll" checked>
-                            <span>Auto-scroll</span>
+                            <span data-i18n="console.autoScroll">Auto-scroll</span>
                         </label>
-                        <button type="button" class="btn btn-text btn-sm" id="clearConsoleBtn">
+                        <button type="button" class="btn btn-text btn-sm" id="clearConsoleBtn" data-i18n="console.clear">
                             Clear
                         </button>
                     </div>
                 </div>
                 <div class="section-content">
                     <div class="console-output" id="consoleOutput">
-                        <div class="console-line">Ready.</div>
+                        <div class="console-line" data-i18n="console.ready">Ready.</div>
                     </div>
                 </div>
             </section>
@@ -1195,8 +1230,8 @@
 
         <!-- Footer -->
         <footer class="app-footer">
-            <p>WhisperJAV - Subtitle generation for Japanese Adult Videos |
-               <a href="#" onclick="showAbout(); return false;" style="color: var(--primary-color); text-decoration: none;">About</a>
+            <p><span data-i18n="footer.tagline">WhisperJAV - Subtitle generation for Japanese Adult Videos |</span>
+               <a href="#" onclick="showAbout(); return false;" style="color: var(--primary-color); text-decoration: none;" data-i18n="footer.about">About</a>
             </p>
         </footer>
 
@@ -1206,53 +1241,53 @@
     <div class="modal-overlay" id="aboutModal">
         <div class="modal-dialog">
             <div class="modal-header">
-                <h2>About WhisperJAV</h2>
-                <button class="modal-close" onclick="closeAbout()" aria-label="Close">&times;</button>
+                <h2 data-i18n="about.title">About WhisperJAV</h2>
+                <button class="modal-close" onclick="closeAbout()" data-i18n-aria="changelog.close" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="about-logo">🎬</div>
-                <div class="about-title">WhisperJAV GUI</div>
+                <div class="about-title" data-i18n="about.guiTitle">WhisperJAV GUI</div>
                 <div class="about-version" id="aboutVersion">Version 1.7.4</div>
 
                 <div class="about-section">
-                    <h3>Description</h3>
-                    <p>Japanese Adult Video Subtitle Generator powered by OpenAI Whisper with specialized enhancements for Japanese language processing, scene detection, and voice activity detection.</p>
+                    <h3 data-i18n="about.descriptionTitle">Description</h3>
+                    <p data-i18n="about.description">Japanese Adult Video Subtitle Generator powered by OpenAI Whisper with specialized enhancements for Japanese language processing, scene detection, and voice activity detection.</p>
                 </div>
 
                 <div class="about-section">
-                    <h3>Key Features</h3>
+                    <h3 data-i18n="about.featuresTitle">Key Features</h3>
                     <ul>
-                        <li>Multi-mode processing (Balanced, Fast, Faster)</li>
-                        <li>Scene detection and voice activity detection</li>
-                        <li>Japanese language optimization</li>
-                        <li>Batch processing support</li>
-                        <li>Real-time progress monitoring</li>
+                        <li data-i18n="about.feature1">Multi-mode processing (Balanced, Fast, Faster)</li>
+                        <li data-i18n="about.feature2">Scene detection and voice activity detection</li>
+                        <li data-i18n="about.feature3">Japanese language optimization</li>
+                        <li data-i18n="about.feature4">Batch processing support</li>
+                        <li data-i18n="about.feature5">Real-time progress monitoring</li>
                     </ul>
                 </div>
 
                 <div class="about-section">
-                    <h3>Technology</h3>
-                    <p>Built with PyWebView and Python. This modern web-based interface provides a clean and intuitive experience for generating high-quality Japanese subtitles.</p>
+                    <h3 data-i18n="about.technologyTitle">Technology</h3>
+                    <p data-i18n="about.technology">Built with PyWebView and Python. This modern web-based interface provides a clean and intuitive experience for generating high-quality Japanese subtitles.</p>
                 </div>
 
                 <div class="about-section">
-                    <h3>Keyboard Shortcuts</h3>
+                    <h3 data-i18n="about.shortcutsTitle">Keyboard Shortcuts</h3>
                     <ul>
-                        <li>Ctrl+O - Add files</li>
-                        <li>Ctrl+R - Start processing</li>
-                        <li>Escape - Cancel process</li>
-                        <li>F1 - Show this dialog</li>
+                        <li data-i18n="about.shortcutAddFiles">Ctrl+O - Add files</li>
+                        <li data-i18n="about.shortcutStart">Ctrl+R - Start processing</li>
+                        <li data-i18n="about.shortcutCancel">Escape - Cancel process</li>
+                        <li data-i18n="about.shortcutHelp">F1 - Show this dialog</li>
                     </ul>
                 </div>
 
                 <div class="about-section">
                     <p style="text-align: center; margin-top: 20px;">
-                        <a href="https://github.com/meizhong986/WhisperJAV" class="about-link" target="_blank">Visit GitHub Repository</a>
+                        <a href="https://github.com/meizhong986/WhisperJAV" class="about-link" target="_blank" data-i18n="about.visitGithub">Visit GitHub Repository</a>
                     </p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="closeAbout()">Close</button>
+                <button class="btn btn-primary" onclick="closeAbout()" data-i18n="about.close">Close</button>
             </div>
         </div>
     </div>
@@ -1261,13 +1296,13 @@
     <div class="modal-overlay" id="changelogModal">
         <div class="modal-dialog">
             <div class="modal-header">
-                <h2 id="changelogTitle">What's New</h2>
-                <button class="modal-close" onclick="ChangelogManager.close()" aria-label="Close">&times;</button>
+                <h2 id="changelogTitle" data-i18n="changelog.title">What's New</h2>
+                <button class="modal-close" onclick="ChangelogManager.close()" data-i18n-aria="changelog.close" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body" id="changelogBody">
                 <div class="changelog-loading" id="changelogLoading">
                     <div class="changelog-spinner">&#x21BB;</div>
-                    <p>Loading release notes...</p>
+                    <p data-i18n="changelog.loading">Loading release notes...</p>
                 </div>
                 <div class="changelog-content" id="changelogContent" style="display: none;">
                     <div class="changelog-version-header">
@@ -1279,15 +1314,15 @@
                     </div>
                 </div>
                 <div class="changelog-error" id="changelogError" style="display: none;">
-                    <p>Could not load release notes.</p>
-                    <a href="https://github.com/meizhong986/WhisperJAV/releases" target="_blank" class="about-link">
+                    <p data-i18n="changelog.loadError">Could not load release notes.</p>
+                    <a href="https://github.com/meizhong986/WhisperJAV/releases" target="_blank" class="about-link" data-i18n="changelog.viewReleases">
                         View releases on GitHub
                     </a>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="ChangelogManager.openGitHub()">View on GitHub</button>
-                <button class="btn btn-primary" onclick="ChangelogManager.close()">Close</button>
+                <button class="btn btn-secondary" onclick="ChangelogManager.openGitHub()" data-i18n="changelog.viewOnGithub">View on GitHub</button>
+                <button class="btn btn-primary" onclick="ChangelogManager.close()" data-i18n="changelog.close">Close</button>
             </div>
         </div>
     </div>
@@ -1296,21 +1331,21 @@
     <div class="modal-overlay" id="updateCheckModal">
         <div class="modal-dialog modal-update-check">
             <div class="modal-header">
-                <h2>Check for Updates</h2>
-                <button class="modal-close" id="updateCheckModalClose" aria-label="Close">&times;</button>
+                <h2 data-i18n="updateCheck.title">Check for Updates</h2>
+                <button class="modal-close" id="updateCheckModalClose" data-i18n-aria="changelog.close" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
                 <!-- Loading State -->
                 <div id="updateCheckLoading" class="update-check-loading">
                     <div class="spinner"></div>
-                    <p>Checking for updates...</p>
+                    <p data-i18n="updateCheck.checking">Checking for updates...</p>
                 </div>
 
                 <!-- Result State -->
                 <div id="updateCheckResult" class="update-check-result" style="display: none;">
                     <!-- Current Version Info -->
                     <div class="current-version-info">
-                        <span class="version-label">Installed:</span>
+                        <span class="version-label" data-i18n="updateCheck.installed">Installed:</span>
                         <span class="version-value" id="updateCurrentVersion">v1.7.5</span>
                         <span class="commit-hash" id="updateCurrentCommit"></span>
                     </div>
@@ -1319,26 +1354,26 @@
                     <div class="update-track update-track-stable" id="stableTrack">
                         <div class="track-header">
                             <span class="track-icon">&#x1F4E6;</span>
-                            <span class="track-title">Stable Release</span>
+                            <span class="track-title" data-i18n="updateCheck.stableRelease">Stable Release</span>
                         </div>
                         <div class="track-content">
                             <div id="stableUpToDate" class="track-status track-status-ok" style="display: none;">
                                 <span class="status-icon">&#x2713;</span>
-                                <span>v<span id="stableLatestVersion">1.7.5</span> - You're up to date</span>
+                                <span>v<span id="stableLatestVersion">1.7.5</span><span data-i18n="updateCheck.upToDateSuffix"> - You're up to date</span></span>
                             </div>
                             <div id="stableUpdateAvailable" class="track-status track-status-update" style="display: none;">
                                 <span class="status-icon">&#x2191;</span>
-                                <span>v<span id="stableNewVersion">1.7.6</span> available</span>
-                                <span class="update-badge" id="stableUpdateBadge">PATCH</span>
+                                <span>v<span id="stableNewVersion">1.7.6</span><span data-i18n="updateCheck.versionAvailableSuffix"> available</span></span>
+                                <span class="update-badge" id="stableUpdateBadge" data-i18n="updateCheck.badgePatch">PATCH</span>
                             </div>
                             <div id="stableReleaseNotes" class="release-notes-section" style="display: none;">
                                 <details class="release-notes-details">
-                                    <summary>Release Notes</summary>
+                                    <summary data-i18n="updateCheck.releaseNotes">Release Notes</summary>
                                     <div id="stableReleaseNotesContent" class="release-notes-content"></div>
                                 </details>
                             </div>
                             <div id="stableActions" class="track-actions" style="display: none;">
-                                <button id="updateToStable" class="btn btn-primary btn-sm">Open Release Page</button>
+                                <button id="updateToStable" class="btn btn-primary btn-sm" data-i18n="updateCheck.openReleasePage">Open Release Page</button>
                             </div>
                         </div>
                     </div>
@@ -1347,24 +1382,24 @@
                     <div class="update-track update-track-dev" id="devTrack">
                         <div class="track-header">
                             <span class="track-icon">&#x26A1;</span>
-                            <span class="track-title">Development</span>
-                            <span class="track-subtitle">(main branch)</span>
+                            <span class="track-title" data-i18n="updateCheck.development">Development</span>
+                            <span class="track-subtitle" data-i18n="updateCheck.mainBranch">(main branch)</span>
                         </div>
                         <div class="track-content">
                             <div id="devUpToDate" class="track-status track-status-ok" style="display: none;">
                                 <span class="status-icon">&#x2713;</span>
-                                <span>Up to date with main branch</span>
+                                <span data-i18n="updateCheck.upToDateMain">Up to date with main branch</span>
                             </div>
                             <div id="devUpdateAvailable" class="track-status track-status-update" style="display: none;">
                                 <span class="status-icon">&#x2191;</span>
-                                <span><span id="devCommitsAhead">0</span> commit(s) ahead</span>
+                                <span><span id="devCommitsAhead">0</span><span data-i18n="updateCheck.commitsAheadSuffix"> commit(s) ahead</span></span>
                             </div>
                             <div id="devCommitsList" class="dev-commits-list" style="display: none;">
-                                <div class="commits-header">Recent commits:</div>
+                                <div class="commits-header" data-i18n="updateCheck.recentCommits">Recent commits:</div>
                                 <ul id="devRecentCommits" class="commits-list"></ul>
                             </div>
                             <div id="devActions" class="track-actions" style="display: none;">
-                                <button id="updateToDev" class="btn btn-secondary btn-sm">Open Release Page</button>
+                                <button id="updateToDev" class="btn btn-secondary btn-sm" data-i18n="updateCheck.openReleasePage">Open Release Page</button>
                             </div>
                         </div>
                     </div>
@@ -1372,11 +1407,11 @@
 
                 <!-- Error State -->
                 <div id="updateCheckError" class="update-check-error" style="display: none;">
-                    <p>Failed to check for updates. Please check your internet connection and try again.</p>
+                    <p data-i18n="updateCheck.failed">Failed to check for updates. Please check your internet connection and try again.</p>
                 </div>
             </div>
             <div class="modal-footer" id="updateCheckFooter">
-                <button id="updateCheckLater" class="btn btn-secondary">Close</button>
+                <button id="updateCheckLater" class="btn btn-secondary" data-i18n="updateCheck.close">Close</button>
             </div>
         </div>
     </div>
@@ -1385,18 +1420,18 @@
     <div class="modal-overlay" id="customizeModal">
         <div class="modal-dialog modal-lg">
             <div class="modal-header">
-                <h2 id="customizeModalTitle">Component Settings</h2>
-                <button class="modal-close" id="customizeModalClose" aria-label="Close">&times;</button>
+                <h2 id="customizeModalTitle" data-i18n="customize.title">Component Settings</h2>
+                <button class="modal-close" id="customizeModalClose" data-i18n-aria="changelog.close" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
                 <!-- Tab Navigation -->
                 <div class="modal-tabs">
-                    <button class="modal-tab active" data-tab="model">Model</button>
-                    <button class="modal-tab" data-tab="quality">Quality</button>
-                    <button class="modal-tab" data-tab="segmenter">Segmenter</button>
-                    <button class="modal-tab" data-tab="enhancer">Enhancer</button>
-                    <button class="modal-tab" data-tab="scene">Scene</button>
-                    <button class="modal-tab" data-tab="context" style="display: none;">Context</button>
+                    <button class="modal-tab active" data-tab="model" data-i18n="customize.tabModel">Model</button>
+                    <button class="modal-tab" data-tab="quality" data-i18n="customize.tabQuality">Quality</button>
+                    <button class="modal-tab" data-tab="segmenter" data-i18n="customize.tabSegmenter">Segmenter</button>
+                    <button class="modal-tab" data-tab="enhancer" data-i18n="customize.tabEnhancer">Enhancer</button>
+                    <button class="modal-tab" data-tab="scene" data-i18n="customize.tabScene">Scene</button>
+                    <button class="modal-tab" data-tab="context" style="display: none;" data-i18n="customize.tabContext">Context</button>
                 </div>
                 <!-- Tab Panels -->
                 <div class="modal-tab-content">
@@ -1423,15 +1458,15 @@
             <div class="modal-footer" style="justify-content: space-between;">
                 <div class="modal-footer-left" style="display: flex; gap: 8px; align-items: center;">
                     <select id="presetSelector" class="form-select" style="width: 180px; font-size: 0.85rem;">
-                        <option value="">Load Preset...</option>
+                        <option value="" data-i18n="customize.loadPreset">Load Preset...</option>
                     </select>
-                    <button class="btn btn-secondary" id="presetSaveBtn" title="Save current parameters as a named preset">Save Preset</button>
-                    <button class="btn btn-secondary" id="presetDeleteBtn" title="Delete the selected preset" style="display: none;">Delete</button>
+                    <button class="btn btn-secondary" id="presetSaveBtn" data-i18n-title="customize.savePresetTitle" data-i18n="customize.savePreset" title="Save current parameters as a named preset">Save Preset</button>
+                    <button class="btn btn-secondary" id="presetDeleteBtn" data-i18n-title="customize.deletePresetTitle" data-i18n="customize.deletePreset" title="Delete the selected preset" style="display: none;">Delete</button>
                 </div>
                 <div class="modal-footer-right" style="display: flex; gap: 8px;">
-                    <button class="btn btn-secondary" id="customizeModalReset">Reset to Defaults</button>
-                    <button class="btn btn-primary" id="customizeModalApply">Apply</button>
-                    <button class="btn btn-primary" id="customizeModalOK">OK</button>
+                    <button class="btn btn-secondary" id="customizeModalReset" data-i18n="customize.resetDefaults">Reset to Defaults</button>
+                    <button class="btn btn-primary" id="customizeModalApply" data-i18n="customize.apply">Apply</button>
+                    <button class="btn btn-primary" id="customizeModalOK" data-i18n="customize.ok">OK</button>
                 </div>
             </div>
         </div>
@@ -1441,22 +1476,22 @@
     <div class="modal-overlay" id="translationSettingsModal">
         <div class="modal-dialog modal-translation-settings">
             <div class="modal-header">
-                <h2>Translation Settings</h2>
-                <button class="modal-close" id="translationSettingsClose" aria-label="Close">&times;</button>
+                <h2 data-i18n="tset.title">Translation Settings</h2>
+                <button class="modal-close" id="translationSettingsClose" data-i18n-aria="changelog.close" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
                 <!-- API Key Section -->
                 <div class="translation-settings-section">
                     <div class="form-row">
                         <div class="form-group flex-grow">
-                            <label for="translationApiKey" class="form-label">API Key:</label>
+                            <label for="translationApiKey" class="form-label" data-i18n="tset.apiKey">API Key:</label>
                             <div class="input-with-status">
-                                <input type="password" id="translationApiKey" class="form-input" placeholder="Enter API key or use environment variable">
+                                <input type="password" id="translationApiKey" class="form-input" data-i18n-placeholder="t4.apiKeyPlaceholder" placeholder="Enter API key or use environment variable">
                                 <span id="translationApiStatus" class="api-status"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="button" class="btn btn-secondary" id="translationTestConnection">
+                            <button type="button" class="btn btn-secondary" id="translationTestConnection" data-i18n="tset.testConnection">
                                 Test Connection
                             </button>
                         </div>
@@ -1467,7 +1502,7 @@
                 <div class="translation-settings-section">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="translationTargetLang" class="form-label">Target Language:</label>
+                            <label for="translationTargetLang" class="form-label" data-i18n="tset.targetLanguage">Target Language:</label>
                             <select id="translationTargetLang" class="form-select">
                                 <option value="english" selected>English</option>
                                 <option value="chinese">Chinese</option>
@@ -1481,11 +1516,11 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="translationTone" class="form-label">Tone/Style:</label>
+                            <label for="translationTone" class="form-label" data-i18n="tset.toneStyle">Tone/Style:</label>
                             <select id="translationTone" class="form-select">
-                                <option value="standard" selected>Standard</option>
-                                <option value="contextual" title="Explicit language only where the original line is explicit — neutral dialogue stays neutral. Local instructions, not overridden by the online gist.">Adult (contextual)</option>
-                                <option value="pornify" title="Everything explicit — also sexualizes neutral dialogue by design.">Adult/Explicit</option>
+                                <option value="standard" selected data-i18n="t4.toneStandard">Standard</option>
+                                <option value="contextual" data-i18n-title="t4.toneContextualTitle" data-i18n="t4.toneContextual" title="Explicit language only where the original line is explicit — neutral dialogue stays neutral. Local instructions, not overridden by the online gist.">Adult (contextual)</option>
+                                <option value="pornify" data-i18n-title="t4.tonePornifyTitle" data-i18n="t4.tonePornify" title="Everything explicit — also sexualizes neutral dialogue by design.">Adult/Explicit</option>
                             </select>
                         </div>
                     </div>
@@ -1494,29 +1529,29 @@
                 <!-- Movie Context Section -->
                 <div class="translation-settings-section translation-context-section">
                     <div class="section-header-inline">
-                        <span class="section-title">Movie Context</span>
-                        <span class="section-note">(single file only)</span>
+                        <span class="section-title" data-i18n="tset.movieContext">Movie Context</span>
+                        <span class="section-note" data-i18n="tset.singleFileOnly">(single file only)</span>
                     </div>
                     <div class="context-note" id="multiFileWarning" style="display: none;">
                         <span class="note-icon">ℹ</span>
-                        <span>Context fields apply to single-file processing. Ignored for batch processing.</span>
+                        <span data-i18n="tset.multiFileWarning">Context fields apply to single-file processing. Ignored for batch processing.</span>
                     </div>
                     <div class="form-row">
                         <div class="form-group full-width">
-                            <label for="translationMovieTitle" class="form-label">Movie Title:</label>
-                            <input type="text" id="translationMovieTitle" class="form-input" placeholder="e.g., ABC-123">
+                            <label for="translationMovieTitle" class="form-label" data-i18n="tset.movieTitle">Movie Title:</label>
+                            <input type="text" id="translationMovieTitle" class="form-input" data-i18n-placeholder="t4.movieTitlePlaceholder" placeholder="e.g., ABC-123">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group full-width">
-                            <label for="translationActress" class="form-label">Actress Name(s):</label>
-                            <input type="text" id="translationActress" class="form-input" placeholder="e.g., Name1, Name2">
+                            <label for="translationActress" class="form-label" data-i18n="tset.actress">Actress Name(s):</label>
+                            <input type="text" id="translationActress" class="form-input" data-i18n-placeholder="tset.actressPlaceholder" placeholder="e.g., Name1, Name2">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group full-width">
-                            <label for="translationPlot" class="form-label">Plot Summary:</label>
-                            <textarea id="translationPlot" class="form-textarea" rows="2" placeholder="Brief plot description for context..."></textarea>
+                            <label for="translationPlot" class="form-label" data-i18n="tset.plotSummary">Plot Summary:</label>
+                            <textarea id="translationPlot" class="form-textarea" rows="2" data-i18n-placeholder="t4.plotPlaceholder" placeholder="Brief plot description for context..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -1524,50 +1559,50 @@
                 <!-- Advanced Settings (Collapsible) -->
                 <details class="translation-settings-section translation-advanced-section">
                     <summary class="section-header-collapsible">
-                        <span class="section-title">Advanced Settings</span>
+                        <span class="section-title" data-i18n="tset.advancedSettings">Advanced Settings</span>
                         <span class="collapse-icon">▶</span>
                     </summary>
                     <div class="advanced-content">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="translationSceneThreshold" class="form-label">Scene Threshold (sec):</label>
+                                <label for="translationSceneThreshold" class="form-label" data-i18n="tset.sceneThreshold">Scene Threshold (sec):</label>
                                 <input type="number" id="translationSceneThreshold" class="form-input" value="60" min="1" max="300">
                             </div>
                             <div class="form-group">
-                                <label for="translationMaxBatchSize" class="form-label">Max Batch Size:</label>
+                                <label for="translationMaxBatchSize" class="form-label" data-i18n="tset.maxBatchSize">Max Batch Size:</label>
                                 <input type="number" id="translationMaxBatchSize" class="form-input" value="30" min="1" max="100">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="translationTemperature" class="form-label">Temperature:</label>
+                                <label for="translationTemperature" class="form-label" data-i18n="tset.temperature">Temperature:</label>
                                 <input type="number" id="translationTemperature" class="form-input" value="0.5" min="0" max="2" step="0.1">
                                 <!-- #444 (owner, 2026-10-06): a custom server keeps its own temperature -->
-                                <div id="translationTemperatureHint" style="display:none; font-size:11px; font-style:italic; color:var(--text-tertiary); margin-top:2px">Custom provider: set by your server (not sent)</div>
+                                <div id="translationTemperatureHint" style="display:none; font-size:11px; font-style:italic; color:var(--text-tertiary); margin-top:2px" data-i18n="tset.temperatureHint">Custom provider: set by your server (not sent)</div>
                             </div>
                             <div class="form-group">
-                                <label for="translationTopP" class="form-label">Top P:</label>
+                                <label for="translationTopP" class="form-label" data-i18n="tset.topP">Top P:</label>
                                 <input type="number" id="translationTopP" class="form-input" value="0.9" min="0" max="1" step="0.1">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group full-width">
-                                <label for="translationCustomEndpoint" class="form-label">Custom Endpoint URL:</label>
-                                <input type="text" id="translationCustomEndpoint" class="form-input" placeholder="https://api.example.com/v1 (for OpenAI-compatible APIs)">
+                                <label for="translationCustomEndpoint" class="form-label" data-i18n="tset.customEndpoint">Custom Endpoint URL:</label>
+                                <input type="text" id="translationCustomEndpoint" class="form-input" data-i18n-placeholder="t4.customEndpointPlaceholder" placeholder="https://api.example.com/v1 (for OpenAI-compatible APIs)">
                             </div>
                         </div>
                         <div class="form-row ollama-settings-row" style="display:none">
                             <div class="form-group full-width">
-                                <label for="translationOllamaUrl" class="form-label">Ollama Server URL:</label>
-                                <input type="text" id="translationOllamaUrl" class="form-input" placeholder="http://localhost:11434 (leave empty for default)">
+                                <label for="translationOllamaUrl" class="form-label" data-i18n="tset.ollamaUrl">Ollama Server URL:</label>
+                                <input type="text" id="translationOllamaUrl" class="form-input" data-i18n-placeholder="tset.ollamaUrlPlaceholder" placeholder="http://localhost:11434 (leave empty for default)">
                             </div>
                         </div>
                     </div>
                 </details>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="translationSettingsCancel">Cancel</button>
-                <button class="btn btn-primary" id="translationSettingsSave">Save</button>
+                <button class="btn btn-secondary" id="translationSettingsCancel" data-i18n="tset.cancel">Cancel</button>
+                <button class="btn btn-primary" id="translationSettingsSave" data-i18n="tset.save">Save</button>
             </div>
         </div>
     </div>
@@ -1576,26 +1611,26 @@
     <div id="ollamaPullModal" class="modal-overlay" style="display:none">
         <div class="modal-dialog modal-sm">
             <div class="modal-header">
-                <h2>Download Model</h2>
-                <button class="modal-close" id="ollamaPullCloseBtn" aria-label="Close">&times;</button>
+                <h2 data-i18n="opull.title">Download Model</h2>
+                <button class="modal-close" id="ollamaPullCloseBtn" data-i18n-aria="changelog.close" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body" id="ollamaPullModalBody">
                 <!-- Confirm state -->
                 <div id="ollamaPullConfirm">
-                    <p><strong id="ollamaPullModelName"></strong> is not downloaded yet.</p>
-                    <p>This will download <strong id="ollamaPullModelSize"></strong>.</p>
+                    <p><strong id="ollamaPullModelName"></strong><span data-i18n="opull.notDownloaded"> is not downloaded yet.</span></p>
+                    <p><span data-i18n="opull.thisWillDownload">This will download </span><strong id="ollamaPullModelSize"></strong>.</p>
                 </div>
                 <!-- Progress state -->
                 <div id="ollamaPullProgress" style="display:none">
-                    <p>Downloading <strong id="ollamaPullProgressModel"></strong>...</p>
+                    <p><span data-i18n="opull.downloadingPrefix">Downloading </span><strong id="ollamaPullProgressModel"></strong><span data-i18n="opull.downloadingSuffix">...</span></p>
                     <div class="pull-progress-bar-container">
                         <div id="ollamaPullProgressBar" class="pull-progress-bar"></div>
                     </div>
-                    <p id="ollamaPullProgressText" class="pull-progress-text">Starting...</p>
+                    <p id="ollamaPullProgressText" class="pull-progress-text" data-i18n="opull.starting">Starting...</p>
                 </div>
                 <!-- Success state -->
                 <div id="ollamaPullSuccess" style="display:none">
-                    <p>Download complete.</p>
+                    <p data-i18n="opull.complete">Download complete.</p>
                 </div>
                 <!-- Error state -->
                 <div id="ollamaPullError" style="display:none">
@@ -1603,13 +1638,16 @@
                 </div>
             </div>
             <div class="modal-footer" id="ollamaPullModalFooter">
-                <button class="btn btn-secondary" id="ollamaPullCancelBtn">Cancel</button>
-                <button class="btn btn-primary" id="ollamaPullDownloadBtn">Download</button>
+                <button class="btn btn-secondary" id="ollamaPullCancelBtn" data-i18n="opull.cancel">Cancel</button>
+                <button class="btn btn-primary" id="ollamaPullDownloadBtn" data-i18n="opull.download">Download</button>
             </div>
         </div>
     </div>
 
     <!-- JavaScript -->
+    <script src="locales/en.js"></script>
+    <script src="locales/zh-CN.js"></script>
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

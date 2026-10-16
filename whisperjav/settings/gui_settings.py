@@ -57,6 +57,11 @@ DEFAULT_GUI_SETTINGS = {
     "offline_mode": False,
     "async_processing": False,
 
+    # UI language (independent of "Remember settings"): "en" or "zh-CN".
+    # Persisted through the same file because the GUI runs with
+    # private_mode=True (localStorage does not survive a session).
+    "ui_language": "en",
+
     # Tab 3 — Ensemble  (values MUST match index.html `selected` attrs)
     # v1.9.5 (owner, 2026-10-12): pass 1 Qwen3-ASR + FireRedVAD, pass 2
     # Anime-Whisper + TEN VAD, both aggressive; pass 2 off by default.

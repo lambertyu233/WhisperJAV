@@ -893,7 +893,7 @@ const ProgressManager = {
     reset() {
         this.setIndeterminate(false);
         this.setProgress(0);
-        this.setStatus('Idle');
+        this.setStatus(t('run.idle'));
     }
 };
 
@@ -926,7 +926,7 @@ const ProcessManager = {
     async start() {
         // Validate form
         if (!FormManager.validateForm()) {
-            ErrorHandler.show('No Files Selected', 'Please add at least one file or folder before starting.');
+            ErrorHandler.show(t('run.noFilesTitle'), t('run.noFilesMessage'));
             return;
         }
 
@@ -947,7 +947,7 @@ const ProcessManager = {
 
                 // Start progress indication
                 ProgressManager.setIndeterminate(true);
-                ProgressManager.setStatus('Running...');
+                ProgressManager.setStatus(t('run.running'));
 
                 // Log command
                 if (result.command) {
@@ -960,7 +960,7 @@ const ProcessManager = {
                 // Start status monitoring
                 this.startStatusMonitoring();
 
-                ConsoleManager.log('Process started successfully', 'info');
+                ConsoleManager.log(t('run.processStarted'), 'info');
             } else {
                 ErrorHandler.show('Start Failed', result.message);
             }
@@ -984,9 +984,9 @@ const ProcessManager = {
                 AppState.isRunning = false;
                 this.updateButtonStates();
                 ProgressManager.reset();
-                ProgressManager.setStatus('Cancelled');
+                ProgressManager.setStatus(t('run.cancelled'));
             } else {
-                ErrorHandler.show('Cancel Failed', result.message);
+                ErrorHandler.show(t('run.cancelFailedTitle'), result.message);
             }
         } catch (error) {
             ErrorHandler.show('Cancel Error', error.toString());
@@ -1065,7 +1065,7 @@ const ProcessManager = {
                     const tally = summary ? summary.tally : null;
                     if (status.status === 'completed') {
                         ProgressManager.setProgress(100);
-                        ProgressManager.setStatus(tally ? `Finished · ${tally}` : 'Finished');
+                        ProgressManager.setStatus(tally ? t('run.finishedWithTally', { tally }) : t('run.finished'));
 
                         // For Ensemble Mode (tab3), translation is handled by CLI --translate flag
                         // For other modes, trigger separate translation subprocess if enabled
@@ -1099,19 +1099,19 @@ const ProcessManager = {
                         ProgressManager.reset();
                         this.logFileStates(summary);
                         if (summary && summary.note) {
-                            ProgressManager.setStatus(`Stopped · ${tally}`);
+                            ProgressManager.setStatus(t('run.stopped', { tally }));
                             ErrorHandler.show('Run stopped', `${summary.note} Files: ${tally}. Exit status ${status.exit_code}.`);
                         } else if (tally) {
-                            ProgressManager.setStatus(`Finished with failures · ${tally}`);
+                            ProgressManager.setStatus(t('run.finishedWithFailures', { tally }));
                             ErrorHandler.show('Finished with failures',
                                 `Files: ${tally}. Exit status ${status.exit_code}; a run fails on: ${(summary.fails_on || ['failed']).join(', ')}. See the RUN SUMMARY in the console.`);
                         } else {
-                            ProgressManager.setStatus(`Finished with failures (exit status ${status.exit_code})`);
+                            ProgressManager.setStatus(t('run.finishedWithFailuresExit', { code: status.exit_code }));
                             ErrorHandler.show('Finished with failures', `Process exited with status ${status.exit_code} and wrote no run summary. Check the console for details.`);
                         }
                     } else if (status.status === 'cancelled') {
                         ProgressManager.reset();
-                        ProgressManager.setStatus('Cancelled');
+                        ProgressManager.setStatus(t('run.cancelled'));
                     }
                 }
             } catch (error) {
@@ -1885,6 +1885,9 @@ const EnsembleManager = {
             select.innerHTML = this._externalSegmenterHTML[passKey];
             delete select.dataset.mode;
             select.title = '';
+            // The cached HTML was snapshotted in whatever language was active
+            // when EnsembleManager first ran; re-apply the current UI language.
+            if (typeof I18N !== 'undefined' && I18N.apply) I18N.apply(select);
             // Availability marking was applied to the options we just replaced.
             this.updateSegmenterAvailability();
         }
@@ -5973,7 +5976,7 @@ const EnsembleManager = {
     async startProcessing() {
         // Validate
         if (AppState.selectedFiles.length === 0) {
-            ErrorHandler.show('No Files Selected', 'Please add at least one file or folder before starting.');
+            ErrorHandler.show(t('run.noFilesTitle'), t('run.noFilesMessage'));
             return;
         }
 
@@ -6183,7 +6186,7 @@ async function showAbout() {
     try {
         const result = await pywebview.api.get_version();
         if (result.success) {
-            versionEl.textContent = `Version ${result.version}`;
+            versionEl.textContent = t('about.version', { version: result.version });
         }
     } catch (e) {
         // Keep existing text on error (fallback to HTML default)
@@ -6547,8 +6550,9 @@ const UpdateManager = {
             const title = document.getElementById('updateTitle');
             const version = document.getElementById('updateVersion');
             if (banner && title && version) {
-                title.textContent = 'Critical Update Available';
-                version.textContent = `v${info.latest_version} is now available (you have v${info.current_version})`;
+                title.textContent = t('update.criticalTitle');
+                version.textContent = t('update.criticalVersion',
+                    { latest: info.latest_version, current: info.current_version });
                 banner.className = 'update-banner visible critical';
             }
             console.log(`Showing critical update banner: ${info.current_version} -> ${info.latest_version}`);
@@ -6559,7 +6563,7 @@ const UpdateManager = {
         const indicator = document.getElementById('updateIndicator');
         const indicatorText = document.getElementById('updateIndicatorText');
         if (indicator && indicatorText) {
-            indicatorText.textContent = `v${info.latest_version} available`;
+            indicatorText.textContent = t('update.indicatorVersion', { latest: info.latest_version });
             indicator.style.display = 'inline-flex';
             indicator.onclick = (e) => {
                 e.preventDefault();
@@ -7637,7 +7641,7 @@ const TranslatorManager = {
 
     async startTranslation() {
         if (AppState.selectedFiles.length === 0) {
-            ErrorHandler.show('No Files', 'Add SRT files in the Source section above, then start translation.');
+            ErrorHandler.show(t('tr.noFilesTitle'), t('tr.noFilesMessage'));
             return;
         }
 
@@ -7647,33 +7651,33 @@ const TranslatorManager = {
             this.state.isRunning = true;
             this.updateButtons();
             this.setProgress(0);
-            this.setStatus('Starting...');
+            this.setStatus(t('tr.starting'));
 
             const result = await pywebview.api.start_translation(options);
 
             if (result.success) {
-                ConsoleManager.log('Translation started', 'info');
+                ConsoleManager.log(t('tr.started'), 'info');
                 this.startStatusPolling();
             } else {
-                throw new Error(result.error || 'Failed to start translation');
+                throw new Error(result.error || t('tr.failedToStart'));
             }
         } catch (error) {
             ConsoleManager.log(`Translation error: ${error.message}`, 'error');
-            ErrorHandler.show('Translation Error', error.message);
+            ErrorHandler.show(t('tr.errorTitle'), error.message);
             this.state.isRunning = false;
             this.updateButtons();
-            this.setStatus('Error');
+            this.setStatus(t('tr.error'));
         }
     },
 
     async cancelTranslation() {
         try {
             await pywebview.api.cancel_translation();
-            ConsoleManager.log('Translation cancelled', 'warning');
+            ConsoleManager.log(t('tr.cancelledLog'), 'warning');
             this.stopStatusPolling();
             this.state.isRunning = false;
             this.updateButtons();
-            this.setStatus('Cancelled');
+            this.setStatus(t('tr.cancelled'));
         } catch (error) {
             console.error('Error cancelling translation:', error);
         }
@@ -7693,7 +7697,7 @@ const TranslatorManager = {
 
                 // Update current file display
                 if (status.current_file) {
-                    this.setStatus(`Translating: ${status.current_file}`);
+                    this.setStatus(t('tr.translating', { file: status.current_file }));
                 }
 
                 // Fetch logs
@@ -7704,20 +7708,20 @@ const TranslatorManager = {
                     this.state.isRunning = false;
                     this.updateButtons();
                     this.setProgress(100);
-                    this.setStatus('Completed');
-                    ConsoleManager.log('Translation completed successfully', 'success');
-                    ErrorHandler.showSuccess('Translation Complete', 'All files have been translated.');
+                    this.setStatus(t('tr.completed'));
+                    ConsoleManager.log(t('tr.completeMessage'), 'success');
+                    ErrorHandler.showSuccess(t('tr.completeTitle'), t('tr.completeMessage'));
                 } else if (status.status === 'error') {
                     this.stopStatusPolling();
                     this.state.isRunning = false;
                     this.updateButtons();
-                    this.setStatus(`Error: ${status.error || 'Unknown'}`);
+                    this.setStatus(t('tr.errorWith', { error: status.error || t('tr.unknown') }));
                     ConsoleManager.log(`Translation error: ${status.error}`, 'error');
                 } else if (status.status === 'cancelled') {
                     this.stopStatusPolling();
                     this.state.isRunning = false;
                     this.updateButtons();
-                    this.setStatus('Cancelled');
+                    this.setStatus(t('tr.cancelled'));
                 }
             } catch (error) {
                 console.error('Status poll error:', error);
@@ -8516,6 +8520,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     RunControls.init();
     KeyboardShortcuts.init();
     ThemeManager.init();
+    LanguageManager.init();
     EnsembleManager.init();
     UpdateManager.init();
     UpdateCheckManager.init();
@@ -8540,15 +8545,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    ConsoleManager.log('WhisperJAV GUI initialized', 'success');
-    ConsoleManager.log('Ready to process video files', 'info');
-    ConsoleManager.log('Press F1 for keyboard shortcuts', 'info');
+    ConsoleManager.log(t('console.initialized'), 'success');
+    ConsoleManager.log(t('console.readyToProcess'), 'info');
+    ConsoleManager.log(t('console.pressF1'), 'info');
 });
 
 // PyWebView ready event — populate dynamic options and load Tab 4 settings.
 window.addEventListener('pywebviewready', async () => {
     console.log('PyWebView API ready!');
-    ConsoleManager.log('PyWebView bridge connected', 'success');
+    ConsoleManager.log(t('console.bridgeConnected'), 'success');
 
     await AppState.loadDefaultOutputDir();
     await EnsembleManager.updateSegmenterAvailability();
@@ -8578,6 +8583,17 @@ window.addEventListener('pywebviewready', async () => {
     await TranslationSettingsModal.loadSettingsFromBackend();
 
     await SettingsPersistence.loadFromBackend();
+
+    // Apply the persisted UI language (independent of "Remember settings";
+    // the language lives in the same backend settings file).
+    try {
+        const langRes = await pywebview.api.get_gui_settings();
+        if (langRes && langRes.success && langRes.settings) {
+            await LanguageManager.applyBackendLanguage(langRes.settings.uiLanguage);
+        }
+    } catch (e) {
+        console.warn('Could not load UI language:', e);
+    }
 
     // Restore the translation choices of both tabs (#435). They come from the
     // translate settings file; browser storage is cleared at every launch

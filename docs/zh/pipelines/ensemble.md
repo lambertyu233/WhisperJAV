@@ -24,11 +24,22 @@ Video → Pass 2 (Pipeline B) → SRT₂ ─┘
 ## 设置集成模式
 
 1. 进入 **Ensemble** 选项卡（第 3 个选项卡）
-2. **Pass 1** 始终处于激活状态 — 配置处理管线、灵敏度和选项
-3. 勾选复选框以**启用 Pass 2**
-4. 为 Pass 2 配置不同的处理管线
-5. 选择一种**合并策略**
+2. **Pass 1 始终处于激活状态**，**Pass 2 默认已勾选** — 两遍均预置了追质量配方（见下方「默认配置」），什么都不改即可直接使用
+3. 只想单遍运行：取消勾选 **Pass 2** 复选框
+4. 按需为每个 Pass 调整处理管线、灵敏度、场景检测、语音增强、语音分段器和模型
+5. 选择一种**合并策略**（默认 Smart Merge）
 6. 点击 **Start**
+
+### 默认配置（追质量配方）
+
+开箱即用的两遍配置，CLI 上 `whisperjav video.mp4 --ensemble` 同样使用它：
+
+| Pass | Pipeline | Sensitivity | Scene | Enhancer | Segmenter | Model |
+|------|----------|-------------|-------|----------|-----------|-------|
+| 1 | Fidelity | Balanced | Semantic | None | FireRedVAD | large-v2 |
+| 2 | Qwen3-ASR | Balanced | Semantic | None | TEN | Qwen/Qwen3-ASR-1.7B |
+
+合并策略默认为 **Smart Merge**。追速度时可将 Pass 1 换成 Balanced，或用 `--pass2-pipeline none` 关闭 Pass 2。
 
 ### Pass 配置
 
@@ -58,8 +69,8 @@ Video → Pass 2 (Pipeline B) → SRT₂ ─┘
 | **Pass 2 Primary** | 当 Pass 2 是可信基线时 |
 | **Overlap 30%** | 保守合并 — 要求 30% 的时间重叠才进行合并 |
 
-!!! tip "推荐组合"
-    **Balanced**（Pass 1）+ **Qwen3-ASR**（Pass 2）+ **Smart Merge** 对大多数内容来说是一个可靠的默认组合。
+!!! tip "默认组合"
+    **Fidelity**（Pass 1）+ **Qwen3-ASR**（Pass 2）+ **Smart Merge** 是开箱即用的追质量默认组合。追求速度时可把 Pass 1 换成 **Balanced**。
 
 ---
 

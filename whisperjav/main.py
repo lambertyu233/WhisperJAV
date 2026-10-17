@@ -328,11 +328,15 @@ def parse_arguments():
     # Two-pass ensemble mode arguments
     twopass_group = parser.add_argument_group("Two-Pass Ensemble Options")
     twopass_group.add_argument("--ensemble", action="store_true",
-                               help="Enable two-pass ensemble mode")
+                               help="Enable ensemble mode (two-pass by default: pass 1 fidelity "
+                                    "+ pass 2 qwen, merged with smart_merge; --pass2-pipeline "
+                                    "none leaves a single pass)")
     # Note: kotoba-faster-whisper temporarily hidden from user selection (implementation preserved)
-    twopass_group.add_argument("--pass1-pipeline", default="balanced",
+    twopass_group.add_argument("--pass1-pipeline", default="fidelity",
                                choices=["balanced", "fast", "faster", "fidelity", "transformers", "qwen", "crispasr"],
-                               help="Pipeline for pass 1 (default: balanced). 'crispasr' requires --crispasr-exe")
+                               help="Pipeline for pass 1 (default: fidelity, the quality-first "
+                                    "pairing; pass 2 defaults to qwen and the merge to "
+                                    "smart_merge). 'crispasr' requires --crispasr-exe")
     twopass_group.add_argument("--pass1-sensitivity", default=None,
                                choices=["conservative", "balanced", "aggressive"],
                                help="Sensitivity for pass 1 (default: aggressive when pass 1 is "
@@ -380,9 +384,12 @@ def parse_arguments():
     twopass_group.add_argument("--pass1-speech-pad-ms", type=int, default=None,
                                help="Speech padding in ms for pass 1")
     # Note: kotoba-faster-whisper temporarily hidden from user selection (implementation preserved)
-    twopass_group.add_argument("--pass2-pipeline", default=None,
-                               choices=["balanced", "fast", "faster", "fidelity", "transformers", "qwen", "xxl", "crispasr"],
-                               help="Pipeline for pass 2 (enables pass 2). 'xxl' = BYOP XXL Faster Whisper (requires --xxl-exe); 'crispasr' requires --crispasr-exe")
+    twopass_group.add_argument("--pass2-pipeline", default="qwen",
+                               choices=["balanced", "fast", "faster", "fidelity", "transformers", "qwen", "xxl", "crispasr", "none"],
+                               help="Pipeline for pass 2 (default: qwen, which enables pass 2; "
+                                    "'none' turns pass 2 off and leaves a single-pass run). "
+                                    "'xxl' = BYOP XXL Faster Whisper (requires --xxl-exe); "
+                                    "'crispasr' requires --crispasr-exe")
     twopass_group.add_argument("--pass2-sensitivity", default=None,
                                choices=["conservative", "balanced", "aggressive"],
                                help="Sensitivity for pass 2 (default: aggressive when pass 2 is "
@@ -429,9 +436,9 @@ def parse_arguments():
                                help="VAD threshold for pass 2 (0.0-1.0)")
     twopass_group.add_argument("--pass2-speech-pad-ms", type=int, default=None,
                                help="Speech padding in ms for pass 2")
-    twopass_group.add_argument("--merge-strategy", default="pass1_primary",
+    twopass_group.add_argument("--merge-strategy", default="smart_merge",
                                choices=["pass1_primary", "pass2_primary", "smart_merge", "full_merge", "pass1_overlap", "pass2_overlap", "longest"],
-                               help="Merge strategy for two-pass results (default: pass1_primary)")
+                               help="Merge strategy for two-pass results (default: smart_merge)")
     twopass_group.add_argument("--ensemble-serial", action="store_true",
                                help="Complete each file (Pass1+Pass2+Merge) before starting the next. "
                                     "Slower (reloads models per file) but delivers results incrementally.")
@@ -586,9 +593,10 @@ def parse_arguments():
                                  "segmenter. NOT accepted with --mode balanced since v1.9.2: "
                                  "balanced runs faster-whisper's built-in VAD, and which Silero "
                                  "build it runs is chosen with --vad-version. Defaults: --mode fidelity "
-                                 "and a fidelity ensemble pass use firered-vad; --ensemble "
-                                 "and --mode qwen use whisperseg; --mode fast and --mode "
-                                 "faster use silero-v3.1. Choices: "
+                                 "and a fidelity ensemble pass use firered-vad; an ensemble pass 1 on "
+                                 "Qwen3-ASR uses firered-vad, and a pass 2 on Qwen3-ASR or "
+                                 "anime-whisper uses ten; --mode qwen uses whisperseg; --mode fast and "
+                                 "--mode faster use silero-v3.1. Choices: "
                                  "firered-vad (FireRedTeam DFSMN VAD, tiny, CPU), "
                                  "whisperseg (Whisper-encoder VAD trained on JA ASMR, ONNX, "
                                  "F1=0.787 on Netflix-GT JAV), "
@@ -2295,13 +2303,28 @@ def _finish_run(outcomes: List[FileOutcome], args: argparse.Namespace,
 
 def apply_ensemble_pass_defaults(args) -> None:
     """
-    Fill in the Ensemble defaults the user did not set (owner, 2026-10-12, v1.9.5):
-    pass 1 Qwen3-ASR runs FireRedVAD at aggressive, pass 2 anime-whisper runs TEN VAD
-    at aggressive (ENSEMBLE_PASS_DEFAULTS). Only for a pass that IS that pipeline,
-    and only for what the command line left out; no pipeline default changes. Every
-    other pass keeps sensitivity balanced, as before. Runs before anything reads the
-    pass settings, so --dump-params shows what the run uses.
+    Normalise the pass-2 sentinel, then fill in the Ensemble defaults the user did
+    not set (owner, 2026-10-17: the quality-first default pairing).
+
+    A bare --ensemble now runs pass 1 Fidelity + pass 2 Qwen3-ASR merged with
+    smart_merge; those pipeline and strategy defaults live in parse_arguments.
+    This function covers the rest: the per-pipeline rows in ENSEMBLE_PASS_DEFAULTS
+    (pass 1 Qwen3-ASR runs FireRedVAD at aggressive; pass 2 anime-whisper runs TEN
+    VAD at aggressive; pass 2 Qwen3-ASR runs TEN VAD at balanced) and, for every
+    other pass, sensitivity balanced. Only for a pass that IS that pipeline, and
+    only for what the command line left out; no pipeline default changes. A
+    fidelity pass 1 keeps the segmenter pass_worker resolves for it (firered-vad).
+    Runs before anything reads the pass settings, so --dump-params shows what the
+    run uses.
+
+    Sentinel: --pass2-pipeline none means "no pass 2". The GUI sends it when the
+    Pass 2 box is unticked, because pass 2 now HAS a pipeline default (qwen) and
+    omitting the flag would silently turn pass 2 on. It is normalised to None
+    here, so every later check and --dump-params see a disabled pass 2 exactly as
+    before.
     """
+    if getattr(args, "pass2_pipeline", None) == "none":
+        args.pass2_pipeline = None
     for n in ("1", "2"):
         defaults = {}
         if getattr(args, f"pass{n}_pipeline", None) == "qwen":
@@ -2388,10 +2411,10 @@ def validate_balanced_vad_options(args) -> None:
         # combination. Reading only the pass flag let the global form set
         # enhance_for_vad on a balanced pass -- the exact thing refused here.
         _pass_efv = getattr(args, f"pass{n}_enhance_for_vad", False)
-        # Only an ensemble run folds the global flag into a pass, and
-        # --pass1-pipeline defaults to balanced, so reading it unconditionally
-        # would refuse --mode fidelity --enhance-for-vad and every other
-        # single-pipeline run that legitimately uses it.
+        # Only an ensemble run folds the global flag into a pass. A single-pass
+        # run has its own --enhance-for-vad path (the balanced refusal above), so
+        # reading the global flag unconditionally here would refuse single-pass
+        # runs that legitimately use it.
         _global_efv = is_ensemble and getattr(args, "enhance_for_vad", False)
         if pipeline == "balanced" and (_pass_efv or _global_efv):
             _flag = f"--pass{n}-enhance-for-vad" if _pass_efv else "--enhance-for-vad"
@@ -2465,7 +2488,8 @@ def main():
         _mr = getattr(args, 'model_refresh_audio_minutes', None)
         if _mr is not None and _mr < 0:
             raise ValueError(f"--model-refresh-audio-minutes: expected 0 (never) or a positive number of minutes, got {_mr}")
-        # v1.9.5: Ensemble defaults for the passes the user left unset.
+        # 2026-10-17: Ensemble defaults for the passes the user left unset
+        # (quality-first pairing: pass 1 Fidelity, pass 2 Qwen3-ASR, Smart Merge).
         apply_ensemble_pass_defaults(args)
         # S2/S9: balanced has no external segmenter any more (v1.9.2).
         validate_balanced_vad_options(args)

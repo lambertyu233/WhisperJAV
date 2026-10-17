@@ -42,9 +42,11 @@ WHAT'S NEW IN v{{VERSION}}
      saved deepseek-v4-flash, it is kept.
 
 3. ENSEMBLE MODE DEFAULTS
-   - Pass 1 now starts as Qwen3-ASR with FireRedVAD, and pass 2 as
-     Anime-Whisper with TEN VAD, both on Aggressive. Pass 2 stays off
-     until you tick it.
+   - The quality-first default: pass 1 now starts as Fidelity
+     (large-v2) with FireRedVAD, and pass 2 as Qwen3-ASR with TEN
+     VAD, both on Balanced. Pass 2 now runs by default; untick it
+     for a single pass.
+   - The default merge strategy is now Smart Merge.
    - With "Remember settings" on, your saved rows are kept until you
      change them.
 

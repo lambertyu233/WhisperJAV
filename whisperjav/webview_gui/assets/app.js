@@ -1320,18 +1320,21 @@ const EnsembleManager = {
     // State - Full Configuration Snapshot approach
     state: {
         pass1: {
-            // v1.9.5 (owner, 2026-10-12): pass 1 is Qwen3-ASR / aggressive / semantic /
-            // none / FireRedVAD. Keep in step with ENSEMBLE_PASS_DEFAULTS in
-            // config/segmenter_presets.py and with applyPipelinePresets below.
-            pipeline: 'qwen',
-            sensitivity: 'aggressive',
+            // 2026-10-17 (owner): the default pairing is quality-first — pass 1 is
+            // Fidelity / balanced / semantic / none / FireRedVAD. Keep in step with
+            // the parse_arguments defaults in main.py, ENSEMBLE_PASS_DEFAULTS in
+            // config/segmenter_presets.py, the selected options in index.html and
+            // applyPipelinePresets below. init() re-syncs all of this from the DOM,
+            // so index.html is what a fresh session actually shows.
+            pipeline: 'fidelity',
+            sensitivity: 'balanced',
             sceneDetector: 'semantic',
             speechEnhancer: 'none',
             speechSegmenter: 'firered-vad',
             vadVersion: '4.0',  // v1.9.2: which Silero build the BUILT-IN VAD runs (balanced only).
                                 // Keep in step with defaultVadVersion below and with
                                 // DEFAULT_VAD_VERSION in modules/silero_vad_adapter.py.
-            model: 'Qwen/Qwen3-ASR-1.7B',
+            model: 'large-v2',
             customized: false,
             params: null,  // null = use defaults, object = full custom config
             presetName: null,  // Name of loaded preset, or null if none
@@ -1345,24 +1348,25 @@ const EnsembleManager = {
             enhanceForVad: false  // Dual-track: use enhanced audio for VAD only, original for ASR
         },
         pass2: {
-            enabled: false,
-            // v1.9.5 (owner, 2026-10-12): pass 2 is Anime-Whisper / aggressive / semantic /
-            // none / TEN VAD, and stays off until the user ticks it.
-            pipeline: 'anime-whisper',
-            sensitivity: 'aggressive',
+            enabled: true,
+            // 2026-10-17 (owner): pass 2 is Qwen3-ASR / balanced / semantic / none /
+            // TEN VAD, and is ON by default as part of the quality-first pairing
+            // (the v1.9.5 decision to keep pass 2 off until ticked is superseded).
+            pipeline: 'qwen',
+            sensitivity: 'balanced',
             sceneDetector: 'semantic',
             speechEnhancer: 'none',
             speechSegmenter: 'ten',  // TEN VAD on pass 2 for segmentation diversity vs pass 1's FireRedVAD
             vadVersion: '4.0',  // v1.9.2: which Silero build the BUILT-IN VAD runs (balanced only).
                                 // Keep in step with defaultVadVersion below and with
                                 // DEFAULT_VAD_VERSION in modules/silero_vad_adapter.py.
-            model: 'litagin/anime-whisper',
+            model: 'Qwen/Qwen3-ASR-1.7B',
             customized: false,
             params: null,
             presetName: null,  // Name of loaded preset, or null if none
             isTransformers: false,
-            isQwen: true,  // Default pipeline is Anime-Whisper (ChronosJAV umbrella)
-            isAnimeWhisper: true,
+            isQwen: true,  // Default pipeline is Qwen3-ASR (ChronosJAV umbrella)
+            isAnimeWhisper: false,
             isCohere: false,  // v1.8.14: Cohere-Transcribe preview (gated HF model)
             isCrispasr: false,  // Track if using CrispASR external provider (v1.9.0)
             isXxl: false,  // Track if using BYOP Faster Whisper XXL
@@ -1372,7 +1376,7 @@ const EnsembleManager = {
             xxlExePath: '',  // Persisted path to XXL executable
             xxlExtraArgs: '--verbose True --standard_asia'  // Default XXL args (model flows via dedicated model field)
         },
-        mergeStrategy: 'pass1_primary',
+        mergeStrategy: 'smart_merge',
         serialMode: false,
         currentCustomize: null,  // 'pass1' or 'pass2'
         // CrispASR exe/args are shared across passes (single --crispasr-* CLI
@@ -1980,10 +1984,16 @@ const EnsembleManager = {
                 // with FIDELITY_DEFAULT_SEGMENTER in
                 // whisperjav/config/segmenter_presets.py. The option itself is in
                 // index.html for both passes.
+                // 2026-10-17: sensitivity balanced as well — the value
+                // ENSEMBLE_DEFAULT_SENSITIVITY gives a fidelity pass the command
+                // line left unset. Picking Fidelity in the row must resolve the
+                // same way the CLI does, or the two entry points disagree.
                 sceneSelect.value = 'semantic';
                 segmenterSelect.value = 'firered-vad';
+                sensitivitySelect.value = 'balanced';
                 this.state[passKey].sceneDetector = 'semantic';
                 this.state[passKey].speechSegmenter = 'firered-vad';
+                this.state[passKey].sensitivity = 'balanced';
             } else {
                 // faster, fast — runtime has vad=none per LEGACY_PIPELINES, but
                 // dropdown still gets the system-wide default for UI consistency

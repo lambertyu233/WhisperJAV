@@ -63,22 +63,25 @@ DEFAULT_GUI_SETTINGS = {
     "ui_language": "en",
 
     # Tab 3 — Ensemble  (values MUST match index.html `selected` attrs)
-    # v1.9.5 (owner, 2026-10-12): pass 1 Qwen3-ASR + FireRedVAD, pass 2
-    # Anime-Whisper + TEN VAD, both aggressive; pass 2 off by default.
-    "pass1_pipeline": "qwen",
-    "pass1_sensitivity": "aggressive",
+    # 2026-10-17 (owner): the quality-first pairing — pass 1 Fidelity +
+    # FireRedVAD at balanced, pass 2 Qwen3-ASR + TEN VAD at balanced, merged
+    # with smart_merge; pass 2 on by default. Keep in step with the
+    # parse_arguments defaults in main.py and ENSEMBLE_PASS_DEFAULTS in
+    # whisperjav/config/segmenter_presets.py.
+    "pass1_pipeline": "fidelity",
+    "pass1_sensitivity": "balanced",
     "pass1_scene_detector": "semantic",
     "pass1_speech_enhancer": "none",
     "pass1_speech_segmenter": "firered-vad",
-    "pass1_model": "Qwen/Qwen3-ASR-1.7B",
-    "pass2_enabled": False,
-    "pass2_pipeline": "anime-whisper",
-    "pass2_sensitivity": "aggressive",
+    "pass1_model": "large-v2",
+    "pass2_enabled": True,
+    "pass2_pipeline": "qwen",
+    "pass2_sensitivity": "balanced",
     "pass2_scene_detector": "semantic",
     "pass2_speech_enhancer": "none",
     "pass2_speech_segmenter": "ten",
-    "pass2_model": "litagin/anime-whisper",
-    "merge_strategy": "pass1_primary",
+    "pass2_model": "Qwen/Qwen3-ASR-1.7B",
+    "merge_strategy": "smart_merge",
     "pass1_preset": "",
     "pass2_preset": "",
 }

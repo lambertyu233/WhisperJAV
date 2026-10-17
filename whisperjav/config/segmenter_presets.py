@@ -99,19 +99,27 @@ BALANCED_DEFAULT_SEGMENTER = "faster-whisper"
 # extra install; its model weights download from HuggingFace on first use.
 FIDELITY_DEFAULT_SEGMENTER = "firered-vad"
 
-# Owner, 2026-10-12 (v1.9.5): the Ensemble defaults are pass 1 Qwen3-ASR with
-# FireRedVAD and pass 2 anime-whisper with TEN VAD, both aggressive. Keyed by
-# (pass, ChronosJAV generator); the generator comes from --passN-qwen-params
-# "generator_backend" (qwen3 when absent). On the command line they apply only
-# when the pass IS that pipeline and the user named no segmenter or sensitivity
-# (main.py apply_ensemble_pass_defaults); no pipeline default changes. The GUI
-# Ensemble tab applies the same values when the pipeline is picked (assets/app.js
-# applyPipelinePresets and the EnsembleManager start-up state). Keep them in step.
+# Owner, 2026-10-17: the Ensemble defaults are the quality-first pairing — pass 1
+# Fidelity with FireRedVAD at balanced (that pipeline default lives in
+# parse_arguments, the segmenter in FIDELITY_DEFAULT_SEGMENTER) and pass 2
+# Qwen3-ASR with TEN VAD at balanced. The rows below are the per-pipeline values a
+# ChronosJAV pass falls back to, keyed by (pass, generator); the generator comes
+# from --passN-qwen-params "generator_backend" (qwen3 when absent). On the command
+# line they apply only when the pass IS that pipeline and the user named no
+# segmenter or sensitivity (main.py apply_ensemble_pass_defaults); no pipeline
+# default changes. The GUI Ensemble tab applies the same values when the pipeline
+# is picked (assets/app.js applyPipelinePresets and the EnsembleManager start-up
+# state). Keep them in step.
 ENSEMBLE_PASS_DEFAULTS = {
     ("1", "qwen3"): {"speech_segmenter": "firered-vad", "sensitivity": "aggressive"},
     ("2", "anime-whisper"): {"speech_segmenter": "ten", "sensitivity": "aggressive"},
+    # 2026-10-17: pass 2 Qwen3-ASR is the new default pass 2. TEN + balanced is
+    # the pairing the GUI has given a pass-2 qwen since v1.9.0; this row makes
+    # the CLI resolve identically instead of leaving the segmenter to the ASR
+    # module (which would run whisperseg there).
+    ("2", "qwen3"): {"speech_segmenter": "ten", "sensitivity": "balanced"},
 }
-# Every other pass keeps the sensitivity it had before v1.9.5.
+# Every other pass — Fidelity included — keeps sensitivity balanced.
 ENSEMBLE_DEFAULT_SENSITIVITY = "balanced"
 
 # Non-Silero segmenters that main.py must NOT downgrade on a single-pass run.

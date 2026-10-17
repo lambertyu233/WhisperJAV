@@ -251,12 +251,11 @@ The same decoupled design is why new models can be added without rebuilding the 
 
 Different pipelines miss different lines. Ensemble mode runs your file through two pipelines and merges the results.
 
-**The v1.9.5 default pairing:** pass 1 = **Qwen3-ASR** with FireRedVAD, pass 2 = **anime-whisper** with TEN VAD, both on Aggressive — two different recognizers *and* two different VADs, so their blind spots don't overlap. In the GUI, pass 2 runs once you tick it.
+**The default pairing:** pass 1 = **Fidelity** (large-v2) with FireRedVAD, pass 2 = **Qwen3-ASR** with TEN VAD, both on Balanced — the most thorough classic pipeline plus a modern text-first recogniser, and two different VADs so their blind spots don't overlap. Results are merged with **Smart Merge**. Pass 2 runs by default; uncheck it in the GUI, or use `--pass2-pipeline none`, for a single pass.
 
 ```bash
-whisperjav video.mp4 --ensemble \
-    --pass1-pipeline qwen --pass2-pipeline balanced \
-    --merge-strategy pass1_primary
+# Quality-tuned defaults: pass 1 Fidelity + pass 2 Qwen3-ASR, Smart Merge
+whisperjav video.mp4 --ensemble
 ```
 
 - **Merge strategies:** `pass1_primary` / `pass2_primary` (one pass leads, the other fills gaps), `smart_merge`, `full_merge`, `pass1_overlap` / `pass2_overlap`, `longest`
@@ -358,7 +357,7 @@ A few known-good recipes:
 
 | Goal | Pass 1 | Pass 2 | Merge |
 |---|---|---|---|
-| The v1.9.5 default | Qwen3-ASR · semantic · FireRedVAD · aggressive | anime-whisper · semantic · TEN · aggressive | `pass1_primary` |
+| The quality default | fidelity · semantic · FireRedVAD · balanced | qwen · semantic · TEN · balanced | `smart_merge` |
 | Classic + modern | balanced · large-v2 | qwen (or the Anime-Galgame finetune) | `pass1_primary` |
 | Quiet/ASMR recall | fidelity · aggressive | anime-whisper · aggressive | `longest` |
 | Second opinion on the model only | your usual recipe | same recipe, different ASR model | `pass1_primary` |
@@ -422,7 +421,7 @@ Sensible defaults everywhere: if you never open a Customize dialog, you get the 
 | Heavy background music | balanced | conservative |
 | Amateur / variable audio | fast | conservative |
 | Group scenes | faster | conservative |
-| Best possible result | ensemble (anime-whisper + qwen) | per-pass defaults |
+| Best possible result | ensemble (fidelity + qwen) | per-pass defaults |
 
 These are starting points, not rules — see [Mix-and-match strategies](#mix-and-match-strategies) for how to adapt them.
 

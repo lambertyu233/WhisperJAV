@@ -3354,6 +3354,14 @@ class WhisperJAVAPI:
                 if model2:
                     args += ["--pass2-model", model2]
 
+        else:
+            # Pass 2 now has a pipeline default (qwen) on the CLI, so omitting
+            # --pass2-pipeline would silently turn pass 2 ON. 'none' is the
+            # documented way to say "no pass 2"; main.py normalises it back to
+            # None (apply_ensemble_pass_defaults) before anything reads the
+            # setting, so an unticked Pass 2 behaves exactly as before.
+            args += ["--pass2-pipeline", "none"]
+
         # CrispASR shared flags — emitted once for whichever pass(es) use it.
         # The CLI uses single --crispasr-* flags (like --xxl-exe), so when both
         # passes are CrispASR with different backends, pass 1's backend wins.
@@ -3375,8 +3383,10 @@ class WhisperJAVAPI:
             if crispasr_args:
                 args += ["--crispasr-args", crispasr_args]
 
-        # Merge strategy (default: pass1_primary - Pass 1 as base, fill gaps from Pass 2)
-        merge_strategy = config.get('merge_strategy', 'pass1_primary')
+        # Merge strategy (default: smart_merge - the quality-first pairing; the
+        # Ensemble tab always sends this.state.mergeStrategy, so the fallback
+        # only covers a hand-built config)
+        merge_strategy = config.get('merge_strategy', 'smart_merge')
         args += ["--merge-strategy", merge_strategy]
 
         # Output directory

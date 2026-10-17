@@ -24,11 +24,22 @@ Merging combines the best of both.
 ## Setting Up Ensemble
 
 1. Go to the **Ensemble** tab (Tab 3)
-2. **Pass 1** is always active — configure pipeline, sensitivity, and options
-3. **Enable Pass 2** by checking the checkbox
-4. Configure Pass 2 with a different pipeline
-5. Choose a **Merge Strategy**
+2. **Pass 1** is always active and **Pass 2 is checked by default** — both come pre-set to the quality recipe (see *Default Configuration* below), so the defaults work out of the box
+3. To run a single pass only: uncheck the **Pass 2** checkbox
+4. Optionally adjust pipeline, sensitivity, and options for each pass
+5. Choose a **Merge Strategy** (Smart Merge by default)
 6. Click **Start**
+
+### Default Configuration (Quality Recipe)
+
+The out-of-the-box two-pass setup — on the CLI, `whisperjav video.mp4 --ensemble` uses the same one:
+
+| Pass | Pipeline | Sensitivity | Scene | Enhancer | Segmenter | Model |
+|------|----------|-------------|-------|----------|-----------|-------|
+| 1 | Fidelity | Balanced | Semantic | None | FireRedVAD | large-v2 |
+| 2 | Qwen3-ASR | Balanced | Semantic | None | TEN | Qwen/Qwen3-ASR-1.7B |
+
+The default merge strategy is **Smart Merge**. For speed, swap Pass 1 to **Balanced**, or turn Pass 2 off with `--pass2-pipeline none`.
 
 ### Pass Configuration
 
@@ -58,8 +69,8 @@ Click **Customize** on any pass for fine-grained parameter control.
 | **Pass 2 Primary** | When Pass 2 is your trusted baseline |
 | **Overlap 30%** | Conservative merge — requires 30% time overlap before merging |
 
-!!! tip "Recommended Combo"
-    **Balanced** (Pass 1) + **Qwen3-ASR** (Pass 2) + **Smart Merge** is a strong default for most content.
+!!! tip "Default Combo"
+    **Fidelity** (Pass 1) + **Qwen3-ASR** (Pass 2) + **Smart Merge** is the out-of-the-box quality default. Swap Pass 1 to **Balanced** when you want speed.
 
 ---
 

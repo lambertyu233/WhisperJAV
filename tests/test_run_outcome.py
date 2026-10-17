@@ -490,7 +490,7 @@ class TestEnsemblePath:
         import whisperjav.ensemble.orchestrator as O
 
         a = media_dir / "a.mp4"; a.write_bytes(b"x")
-        _fake_srt(out_dir, "a.ja.merged.whisperjav.srt", [(1, 2, "x")])
+        _fake_srt(out_dir, "a.ja.srt", [(1, 2, "x")])
         _StubOrchestrator.plan = {}
         code = _run_main(monkeypatch, _ensemble_argv([a], out_dir, tmp_path, ["--skip-existing"]),
                          [_media(a, 3600.0)], [(O, "EnsembleOrchestrator", _StubOrchestrator)])

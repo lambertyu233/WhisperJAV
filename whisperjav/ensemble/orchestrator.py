@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 from whisperjav.utils.logger import logger
 from whisperjav.utils.metadata_manager import MetadataManager
 from whisperjav.utils.parameter_tracer import NullTracer
+from whisperjav.utils.subtitle_outputs import finalize_outputs, merged_srt_working_name
 
 from .merge import MergeEngine
 from .pass_worker import WorkerPayload, run_pass_worker
@@ -32,6 +33,7 @@ class EnsembleOrchestrator:
         progress_display=None,
         log_level: str = "INFO",
         serial_file_processing: bool = False,
+        keep_intermediates: bool = False,
         **kwargs
     ):
         """
@@ -47,6 +49,11 @@ class EnsembleOrchestrator:
             serial_file_processing: If True, each file completes its full cycle
                 (Pass 1 → Pass 2 → Merge) before the next file begins. Slower
                 (reloads models per file) but delivers results incrementally.
+            keep_intermediates: If True, keep each pass's SRT
+                (``{basename}.{lang}.pass{N}.srt``) instead of deleting it once
+                the merged subtitle has been written. Implied by --keep-temp
+                and --debug, both of which mean "leave everything for
+                inspection".
             **kwargs: Additional parameters passed to pipelines
         """
         # "source" sentinel means each file's SRT goes next to its input file
@@ -63,6 +70,15 @@ class EnsembleOrchestrator:
 
         self.temp_dir = Path(temp_dir)
         self.keep_temp_files = keep_temp_files
+        # Per-pass SRTs live in the user's output folder, so deleting them is the
+        # default. Both --keep-temp and --debug ask for artifacts to be left
+        # behind for inspection, so they extend to the pass SRTs too rather than
+        # leaving half of the intermediates around.
+        self.keep_intermediates = (
+            bool(keep_intermediates)
+            or keep_temp_files
+            or bool(kwargs.get('save_metadata_json'))
+        )
         self.subs_language = subs_language
         self.progress_display = progress_display
         self.log_level = log_level
@@ -387,7 +403,9 @@ class EnsembleOrchestrator:
                         tmp_merge = self.temp_dir / f"{basename}.merge.tmp.srt"
                         tmp_merge.parent.mkdir(parents=True, exist_ok=True)
                         file_output_dir = Path(media_info.get('output_dir', str(self.output_dir)))
-                        final_candidate = file_output_dir / f"{basename}.{lang_code}.merged.whisperjav.srt"
+                        # Working name only — _finalize_outputs() renames it to the
+                        # delivered name once this file's outcome is settled.
+                        final_candidate = file_output_dir / merged_srt_working_name(basename, lang_code)
                         try:
                             merge_stats = self.merge_engine.merge(
                                 srt1_path=pass1_srt,
@@ -470,7 +488,66 @@ class EnsembleOrchestrator:
 
         ensemble_metadata.setdefault('status', 'completed')
 
+        # Last step for this file: hand back one subtitle under its delivered
+        # name and take the per-pass SRTs away. Done here, inside the shared
+        # method, so batch and serial mode cannot drift apart.
+        self._finalize_outputs(ensemble_metadata, row_display, lang_code)
+
         return ensemble_metadata, row_display
+
+    def _finalize_outputs(
+        self,
+        metadata: Dict[str, Any],
+        row_display: Dict[str, str],
+        lang_code: str,
+    ) -> None:
+        """Rename the merged subtitle to its delivered name and delete per-pass SRTs.
+
+        Rewrites the paths already recorded in ``metadata``, because callers
+        read them after this point: `main` translates from
+        ``summary.final_output`` and converts it to VTT from the same field, and
+        the batch summary writes both it and ``output_files`` to JSON. Leaving
+        the pre-rename path in place would point all of them at a file that no
+        longer exists.
+
+        ``output_files['pass1_srt']`` / ``['pass2_srt']`` keep their old values
+        on purpose: they are the record of what was produced, not a promise that
+        the file is still on disk.
+        """
+        summary = metadata.get('summary') or {}
+        basename = (metadata.get('input') or {}).get('basename')
+
+        result = finalize_outputs(
+            final_output=summary.get('final_output'),
+            basename=basename,
+            language_code=lang_code,
+            remove_intermediates=not self.keep_intermediates,
+        )
+
+        if result.removed_intermediates:
+            metadata['intermediates_removed'] = True
+        if result.skipped_reason and result.final_path is None:
+            logger.warning(
+                "No subtitle to finalize for %s (%s)",
+                basename,
+                result.skipped_reason,
+            )
+            return
+        if result.final_path is None:
+            return
+
+        if result.renamed:
+            previous_name = Path(summary['final_output']).name
+            summary['final_output'] = str(result.final_path)
+            output_files = metadata.get('output_files')
+            if isinstance(output_files, dict):
+                output_files['final_srt'] = str(result.final_path)
+            # The row already reads either the plain filename or a fallback note
+            # like "fallback to pass1 (video.ja.pass1.srt)"; swapping the
+            # filename inside it keeps that context instead of dropping it.
+            row_display['final'] = str(row_display.get('final', '')).replace(
+                previous_name, result.final_path.name
+            )
 
     def _process_batch_serial(
         self,
@@ -893,7 +970,17 @@ class EnsembleOrchestrator:
         }
 
     def _cleanup_intermediate(self, media_basename: str):
-        """Clean up intermediate pass files."""
+        """Clean up temp directories left behind by the passes.
+
+        Per-pass *SRTs* are not handled here: they live in the output directory
+        rather than the temp directory, and removing them is
+        `_finalize_outputs`'s job (it runs per file, knows which file is being
+        delivered, and honours `keep_intermediates`). This method still sweeps
+        the shared temp sub-directories, which are not file-specific.
+
+        The `media_basename` parameter is retained for call-site compatibility
+        with `_finalize_outputs`'s per-file timing.
+        """
         try:
             # Clean pass-specific temp directories created by orchestrator and workers
             for suffix in ["pass1", "pass2", "pass1_worker", "pass2_worker"]:
@@ -901,9 +988,6 @@ class EnsembleOrchestrator:
                 if pass_temp.exists():
                     shutil.rmtree(pass_temp)
                     logger.debug(f"Cleaned up temp directory: {pass_temp.name}")
-
-            # Optionally remove intermediate SRT files
-            # Keep them for now for debugging - user can delete manually
         except Exception as e:
             logger.warning(f"Error during cleanup: {e}")
 

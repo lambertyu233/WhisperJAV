@@ -30,6 +30,7 @@ from whisperjav.pipelines.qwen_pipeline import QwenPipeline
 from whisperjav.pipelines.crispasr_pipeline import CrispASRPipeline
 from whisperjav.utils.logger import logger, setup_logger
 from whisperjav.utils.parameter_tracer import create_tracer, NullTracer
+from whisperjav.utils.subtitle_outputs import pass_srt_name
 
 from .utils import resolve_language_code
 
@@ -705,7 +706,7 @@ def run_pass_worker(payload: WorkerPayload, result_file: str) -> None:
                 final_srt = Path(final_srt_path)
                 # Per-file output dir (source mode) takes precedence over payload default
                 file_output_dir = Path(media_info.get('output_dir', payload.output_dir))
-                pass_output = file_output_dir / f"{basename}.{language_code}.pass{pass_number}.srt"
+                pass_output = file_output_dir / pass_srt_name(basename, language_code, pass_number)
 
                 if not final_srt.exists():
                     # BUG FIX: Previously this case silently fell through and marked as "completed"
@@ -918,7 +919,7 @@ def _run_xxl_pass(
             # normal pipelines: {basename}.{lang}.pass{N}.srt)
             file_output_dir = Path(media_info.get('output_dir', payload.output_dir))
             file_output_dir.mkdir(parents=True, exist_ok=True)
-            pass_output = file_output_dir / f"{basename}.{language_code}.pass{pass_number}.srt"
+            pass_output = file_output_dir / pass_srt_name(basename, language_code, pass_number)
 
             if pass_output.exists():
                 pass_output.unlink()

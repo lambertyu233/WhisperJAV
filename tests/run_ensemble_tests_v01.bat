@@ -96,9 +96,10 @@ whisperjav "%TEST_FILE%" ^
 
 set "TEST1_RESULT=%ERRORLEVEL%"
 
-REM Copy merged/pass1 output to stable per-test filename
+REM Copy ensemble output to stable per-test filename
 set "FINAL_SRT="
-for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.merged.whisperjav.srt") do set "FINAL_SRT=%%~fs"
+for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.??.srt") do set "FINAL_SRT=%%~fs"
+if not defined FINAL_SRT for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.merged.whisperjav.srt") do set "FINAL_SRT=%%~fs"
 if not defined FINAL_SRT for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.pass1.srt") do set "FINAL_SRT=%%~fs"
 if defined FINAL_SRT (
     copy "!FINAL_SRT!" "%OUTPUT_DIR%\%TEST_NAME%_%TEST_BASENAME%.srt" >nul
@@ -163,9 +164,10 @@ whisperjav "%TEST_FILE%" ^
 
 set "TEST2_RESULT=%ERRORLEVEL%"
 
-REM Copy merged/pass1 output to stable per-test filename
+REM Copy ensemble output to stable per-test filename
 set "FINAL_SRT="
-for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.merged.whisperjav.srt") do set "FINAL_SRT=%%~fs"
+for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.??.srt") do set "FINAL_SRT=%%~fs"
+if not defined FINAL_SRT for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.merged.whisperjav.srt") do set "FINAL_SRT=%%~fs"
 if not defined FINAL_SRT for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.pass1.srt") do set "FINAL_SRT=%%~fs"
 if defined FINAL_SRT (
     copy "!FINAL_SRT!" "%OUTPUT_DIR%\%TEST_NAME%_%TEST_BASENAME%.srt" >nul
@@ -228,9 +230,10 @@ whisperjav "%TEST_FILE%" ^
 
 set "TEST3_RESULT=%ERRORLEVEL%"
 
-REM Copy merged/pass1 output to stable per-test filename
+REM Copy ensemble output to stable per-test filename
 set "FINAL_SRT="
-for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.merged.whisperjav.srt") do set "FINAL_SRT=%%~fs"
+for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.??.srt") do set "FINAL_SRT=%%~fs"
+if not defined FINAL_SRT for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.merged.whisperjav.srt") do set "FINAL_SRT=%%~fs"
 if not defined FINAL_SRT for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.pass1.srt") do set "FINAL_SRT=%%~fs"
 if defined FINAL_SRT (
     copy "!FINAL_SRT!" "%OUTPUT_DIR%\%TEST_NAME%_%TEST_BASENAME%.srt" >nul
@@ -293,9 +296,10 @@ whisperjav "%TEST_FILE%" ^
 
 set "TEST4_RESULT=%ERRORLEVEL%"
 
-REM Copy merged/pass1 output to stable per-test filename
+REM Copy ensemble output to stable per-test filename
 set "FINAL_SRT="
-for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.merged.whisperjav.srt") do set "FINAL_SRT=%%~fs"
+for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.??.srt") do set "FINAL_SRT=%%~fs"
+if not defined FINAL_SRT for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.merged.whisperjav.srt") do set "FINAL_SRT=%%~fs"
 if not defined FINAL_SRT for %%s in ("%OUTPUT_DIR%\%TEST_BASENAME%.*.pass1.srt") do set "FINAL_SRT=%%~fs"
 if defined FINAL_SRT (
     copy "!FINAL_SRT!" "%OUTPUT_DIR%\%TEST_NAME%_%TEST_BASENAME%.srt" >nul

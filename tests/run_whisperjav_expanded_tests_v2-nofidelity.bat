@@ -360,7 +360,7 @@ exit /b 0
 
 REM ===========================================================================
 REM COPY_SRT: Copy output SRT to stable per-test filename
-REM   Priority: merged.whisperjav.srt > pass1.srt > *.whisperjav.srt
+REM   Priority: <name>.<lang>.srt > merged.whisperjav.srt > pass1.srt > *.whisperjav.srt
 REM ===========================================================================
 :COPY_SRT
 set "CS_BASENAME=%~1"
@@ -368,7 +368,8 @@ set "CS_TESTNAME=%~2"
 set "CS_FINAL_SRT="
 
 REM Try merged output first (ensemble)
-for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.*.merged.whisperjav.srt") do set "CS_FINAL_SRT=%%~fs"
+for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.??.srt") do set "CS_FINAL_SRT=%%~fs"
+if not defined CS_FINAL_SRT for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.*.merged.whisperjav.srt") do set "CS_FINAL_SRT=%%~fs"
 REM Try pass1 fallback (ensemble artifacts)
 if not defined CS_FINAL_SRT for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.*.pass1.srt") do set "CS_FINAL_SRT=%%~fs"
 REM Try single-pass output

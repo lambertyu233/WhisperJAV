@@ -73,6 +73,9 @@ class TestTheOrchestratorGathersThem:
         # in as an argument.
         orchestrator.temp_dir = tmp_path
         orchestrator.output_dir = tmp_path
+        # Read by the finalize step that renames the merged subtitle and drops
+        # the per-pass SRTs. False here keeps the input SRTs these tests write.
+        orchestrator.keep_intermediates = True
         media_info = {"path": str(tmp_path / "clip.mp4"), "basename": "clip"}
 
         metadata, _row = orchestrator._process_single_file_merge(

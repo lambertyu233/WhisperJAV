@@ -110,6 +110,7 @@ from whisperjav.utils.media_leftovers import (
     temp_dir_conflicts,
     looks_like_whisperjav_leftover,
 )
+from whisperjav.utils.subtitle_outputs import final_srt_name
 from whisperjav.pipelines.faster_pipeline import FasterPipeline
 from whisperjav.pipelines.fast_pipeline import FastPipeline
 from whisperjav.pipelines.fidelity_pipeline import FidelityPipeline
@@ -512,6 +513,11 @@ def parse_arguments():
                            help='Output subtitle format: srt (default), vtt (WebVTT), or both')
     path_group.add_argument("--temp-dir", default=None, help="Temporary directory")
     path_group.add_argument("--keep-temp", action="store_true", help="Keep temporary files")
+    path_group.add_argument("--keep-intermediates", action="store_true",
+                          help="Ensemble mode: keep each pass's SRT "
+                               "(<name>.<lang>.pass1.srt / .pass2.srt) next to the "
+                               "video instead of deleting them once the final "
+                               "subtitle is written")
     path_group.add_argument("--skip-existing", action="store_true",
                            help="Skip files that already have subtitle output (useful for resuming batch processing)")
     path_group.add_argument("--log-level", choices=["DEBUG", "INFO", "WARNING", "ERROR"], 
@@ -3465,9 +3471,13 @@ def main():
                 pass1_config, pass2_config, logger=logger
             )
 
-            # --skip-existing (#328): filter out files whose merged output
+            # --skip-existing (#328): filter out files whose final output
             # already exists. Mirrors the sync/async single-pass behavior;
-            # ensemble's final artifact is <basename>.<lang>.merged.whisperjav.srt.
+            # ensemble's delivered subtitle is <basename>.<lang>.srt (the
+            # orchestrator renames its merged output to that name and drops the
+            # per-pass SRTs). The name comes from the shared helper so this check
+            # cannot drift from what the orchestrator actually writes — a
+            # mismatch here would silently re-transcribe every file, every run.
             _all_media_files = media_files
             if getattr(args, 'skip_existing', False):
                 _out_lang = 'en' if args.subs_language == 'direct-to-english' else language_code
@@ -3477,17 +3487,17 @@ def main():
                     _src = Path(media_info.get('path', ''))
                     _base = media_info.get('basename', _src.stem)
                     _dir = _src.parent if _to_source else Path(args.output_dir)
-                    if (_dir / f"{_base}.{_out_lang}.merged.whisperjav.srt").exists():
-                        logger.info(f"Skipping (merged output exists): {_src.name}")
-                        outcomes.append(skipped_outcome(str(_src), "merged output already exists"))
+                    if (_dir / final_srt_name(_base, _out_lang)).exists():
+                        logger.info(f"Skipping (subtitle already exists): {_src.name}")
+                        outcomes.append(skipped_outcome(str(_src), "subtitle already exists"))
                     else:
                         _remaining.append(media_info)
                 _n_skipped = len(media_files) - len(_remaining)
                 if _n_skipped:
-                    print(f"\nSkipping {_n_skipped} file(s) with existing merged outputs (--skip-existing)")
+                    print(f"\nSkipping {_n_skipped} file(s) with existing subtitles (--skip-existing)")
                 media_files = _remaining
                 if not media_files:
-                    print("All files already have merged outputs - nothing to do.")
+                    print("All files already have subtitles - nothing to do.")
                     sys.exit(_finish_run(outcomes, args, _all_media_files, _run_started_at))
 
             # Create orchestrator
@@ -3502,6 +3512,7 @@ def main():
                 parameter_tracer=tracer,
                 log_level=log_level,
                 serial_file_processing=getattr(args, 'ensemble_serial', False),
+                keep_intermediates=getattr(args, 'keep_intermediates', False),
                 # v1.9.2 (CFF1): rides worker_kwargs into every pass pipeline's
                 # constructor; Balanced/Fidelity honour it, the others ignore it.
                 model_refresh_audio_minutes=getattr(args, 'model_refresh_audio_minutes', DEFAULT_MODEL_REFRESH_AUDIO_MINUTES),

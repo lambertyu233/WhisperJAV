@@ -24,6 +24,7 @@ from whisperjav.utils.process_manager import (
     PSUTIL_AVAILABLE,
 )
 from whisperjav.config.qwen3_whisperseg_vad import QWEN3_WHISPERSEG_DEFAULTS
+from whisperjav.utils.subtitle_outputs import final_srt_name
 
 
 # Determine REPO_ROOT for module resolution
@@ -479,10 +480,12 @@ class WhisperJAVAPI:
             input_name = Path(input_path).stem
 
             # Determine output filename based on mode
-            # Ensemble mode: {basename}.{lang}.merged.whisperjav.srt
+            # Ensemble mode: {basename}.{lang}.srt — the orchestrator renames its
+            # merged output to exactly this name, so it comes from the shared
+            # helper rather than being spelled out again here.
             # Other modes: {basename}.srt (standard naming)
             if use_ensemble_naming:
-                output_name = f"{input_name}.{lang_code}.merged.whisperjav.srt"
+                output_name = final_srt_name(input_name, lang_code)
             else:
                 output_name = f"{input_name}.srt"
 

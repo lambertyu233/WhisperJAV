@@ -100,7 +100,7 @@ ACCEPTANCE_CASES: List[AcceptanceCase] = [
             "--pass2-pipeline", "faster",
         ],
         audio_file=TEST_AUDIO_20S,
-        expected_srt_suffix=".ja.merged.whisperjav.srt",
+        expected_srt_suffix=".ja.srt",
         timeout=300,
         slow=True,
     ),

@@ -346,8 +346,9 @@ exit /b 0
 REM ---------------------------------------------------------------------------
 REM Helper: copy output SRT for a basename to a stable per-test filename
 REM Priorities:
-REM   1) merged.whisperjav.srt (ensemble)
-REM   2) pass1.srt (ensemble fallback artifacts)
+REM   1) <name>.<lang>.srt (ensemble, current delivered name)
+REM   2) merged.whisperjav.srt (older runs)
+REM   3) pass1.srt (ensemble fallback artifacts)
 REM   3) *.whisperjav.srt (single-pass output)
 REM ---------------------------------------------------------------------------
 :COPY_SRT
@@ -355,7 +356,8 @@ set "CS_BASENAME=%~1"
 set "CS_TESTNAME=%~2"
 set "CS_FINAL_SRT="
 
-for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.*.merged.whisperjav.srt") do set "CS_FINAL_SRT=%%~fs"
+for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.??.srt") do set "CS_FINAL_SRT=%%~fs"
+if not defined CS_FINAL_SRT for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.*.merged.whisperjav.srt") do set "CS_FINAL_SRT=%%~fs"
 if not defined CS_FINAL_SRT for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.*.pass1.srt") do set "CS_FINAL_SRT=%%~fs"
 if not defined CS_FINAL_SRT for %%s in ("%OUTPUT_DIR%\%CS_BASENAME%.*.whisperjav.srt") do set "CS_FINAL_SRT=%%~fs"
 

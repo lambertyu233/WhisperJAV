@@ -209,6 +209,11 @@ class WhisperJAVAPI:
         if options.get('asr_telemetry', True) is False:
             args += ["--no-asr-telemetry"]
 
+        # whisperjav_run.json is written next to the outputs by default; the
+        # checkbox only opts out (the CLI's --no-manifest).
+        if options.get('write_manifest', True) is False:
+            args += ["--no-manifest"]
+
         # #415: downloaded Hugging Face models only (HF_HUB_OFFLINE=1 in the child and its workers).
         if options.get('offline_mode', False):
             args += ["--offline"]
@@ -355,6 +360,11 @@ class WhisperJAVAPI:
         if options.get('asr_telemetry', True) is False:
             args += ["--no-asr-telemetry"]
 
+        # whisperjav_run.json is written next to the outputs by default; the
+        # checkbox only opts out (the CLI's --no-manifest).
+        if options.get('write_manifest', True) is False:
+            args += ["--no-manifest"]
+
         # #415: downloaded Hugging Face models only (HF_HUB_OFFLINE=1 in the child and its workers).
         if options.get('offline_mode', False):
             args += ["--offline"]
@@ -415,6 +425,11 @@ class WhisperJAVAPI:
         # Per-scene ASR telemetry is on by default; the checkbox only opts out.
         if options.get('asr_telemetry', True) is False:
             args += ["--no-asr-telemetry"]
+
+        # whisperjav_run.json is written next to the outputs by default; the
+        # checkbox only opts out (the CLI's --no-manifest).
+        if options.get('write_manifest', True) is False:
+            args += ["--no-manifest"]
 
         # #415: downloaded Hugging Face models only (HF_HUB_OFFLINE=1 in the child and its workers).
         if options.get('offline_mode', False):
@@ -710,7 +725,9 @@ class WhisperJAVAPI:
         The manifest path is derived exactly as the CLI derives it, from the
         same output directory and inputs. A manifest older than this process is
         a previous run's and is ignored, so a crash before the CLI's finisher
-        never shows stale states. Never raises.
+        never shows stale states. Never raises. With the manifest switched off
+        (``write_manifest: false``, the CLI's --no-manifest) there is nothing to
+        read: no tally, and no reading of a file the run did not write.
         """
         try:
             import datetime as _dt
@@ -718,6 +735,8 @@ class WhisperJAVAPI:
             from whisperjav.utils.run_outcome import STATES, default_manifest_path
 
             opts = self._run_options or {}
+            if opts.get('write_manifest', True) is False:
+                return None
             # The same call, on the same raw inputs and output_dir the CLI was
             # given, as the CLI itself makes in _finish_run().
             inputs = [str(p) for p in (opts.get("inputs") or [])]
@@ -768,9 +787,15 @@ class WhisperJAVAPI:
         s = self._run_summary
         code = self.exit_code
         if s is None:
+            # No manifest was written for this run, so there is no per-file
+            # tally to repeat. Say which case it is instead of leaving the
+            # reader to wonder whether the run was cut short.
+            because = ("the manifest was switched off"
+                       if (self._run_options or {}).get('write_manifest', True) is False
+                       else "no run summary was written")
             if code == 0:
-                return f"[FINISHED] exit status {code} (no run summary was written)"
-            return f"[FINISHED WITH FAILURES] exit status {code} (no run summary was written)"
+                return f"[FINISHED] exit status {code} ({because})"
+            return f"[FINISHED WITH FAILURES] exit status {code} ({because})"
         if s.get("note"):
             return f"[STOPPED] {s['note']} — {s['tally']} (exit status {code})"
         if code == 0:
@@ -2021,6 +2046,11 @@ class WhisperJAVAPI:
         # Per-scene ASR telemetry is on by default; the checkbox only opts out.
         if options.get('asr_telemetry', True) is False:
             args += ["--no-asr-telemetry"]
+
+        # whisperjav_run.json is written next to the outputs by default; the
+        # checkbox only opts out (the CLI's --no-manifest).
+        if options.get('write_manifest', True) is False:
+            args += ["--no-manifest"]
 
         # #415: downloaded Hugging Face models only (HF_HUB_OFFLINE=1 in the child and its workers).
         if options.get('offline_mode', False):
@@ -3426,6 +3456,11 @@ class WhisperJAVAPI:
         if config.get('asr_telemetry', True) is False:
             args += ["--no-asr-telemetry"]
 
+        # whisperjav_run.json is written next to the outputs by default; the
+        # checkbox only opts out (the CLI's --no-manifest).
+        if config.get('write_manifest', True) is False:
+            args += ["--no-manifest"]
+
         # #415: downloaded Hugging Face models only (HF_HUB_OFFLINE=1 in the child and its workers).
         if config.get('offline_mode', False):
             args += ["--offline"]
@@ -3963,6 +3998,7 @@ class WhisperJAVAPI:
         "remember_settings":         "rememberSettings",
         "fail_on_empty":             "failOnEmpty",
         "fail_on_suspect":           "failOnSuspect",
+        "write_manifest":            "writeRunManifest",
         "asr_telemetry":             "asrTelemetry",
         "model_refresh_audio_minutes": "modelRefreshAudioMinutes",
         "temp_dir":                  "tempDir",

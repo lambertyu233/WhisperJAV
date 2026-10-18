@@ -404,6 +404,19 @@ class TestEnsemblePath:
         assert data["mode"] == "ensemble"
         assert [f["state"] for f in data["files"]] == ["done"]
 
+    def test_no_manifest_leaves_no_file_and_keeps_the_verdict(self, monkeypatch, media_dir, out_dir, tmp_path):
+        """The ensemble path writes its manifest in the same _finish_run as every
+        other path, so --no-manifest keeps the output folder clean here too."""
+        import whisperjav.ensemble.orchestrator as O
+
+        a = media_dir / "a.mp4"; a.write_bytes(b"x")
+        srt = _fake_srt(out_dir, "a.ja.merged.whisperjav.srt", [(1, 2, "x")])
+        _StubOrchestrator.plan = {"a": ("completed", srt, None)}
+        assert _run_main(monkeypatch, _ensemble_argv([a], out_dir, tmp_path, ["--no-manifest"]),
+                         [_media(a, 3600.0)],
+                         [(O, "EnsembleOrchestrator", _StubOrchestrator)]) == 0
+        assert not (out_dir / MANIFEST_NAME).exists()
+
     def test_failed_pass_exits_one(self, monkeypatch, media_dir, out_dir, tmp_path):
         import whisperjav.ensemble.orchestrator as O
 
@@ -538,6 +551,28 @@ class TestSyncPath:
         data = json.loads((out_dir / MANIFEST_NAME).read_text(encoding="utf-8"))
         assert data["mode"] == "faster"
         assert data["files"][0]["state"] == "done"
+
+    def test_no_manifest_skips_the_file_and_keeps_the_verdict(self, monkeypatch, media_dir, out_dir, tmp_path):
+        """--no-manifest leaves the output folder clean; the exit status and the
+        printed table are the run's verdict either way, so nothing else changes."""
+        import whisperjav.main as M
+
+        a = media_dir / "a.mp4"; a.write_bytes(b"x")
+        srt = _fake_srt(out_dir, "a.ja.whisperjav.srt", [(1, 2, "x")])
+        _StubPipeline.plan = {"a": lambda: _metadata(srt)}
+        code = _run_main(monkeypatch, _sync_argv([a], out_dir, tmp_path, ["--no-manifest"]),
+                         [_media(a, 3600.0)], [(M, "FasterPipeline", _StubPipeline)])
+        assert code == 0
+        assert not (out_dir / MANIFEST_NAME).exists()
+
+        def _boom():
+            raise RuntimeError("cuda died")
+
+        _StubPipeline.plan = {"a": _boom}
+        code = _run_main(monkeypatch, _sync_argv([a], out_dir, tmp_path, ["--no-manifest"]),
+                         [_media(a, 3600.0)], [(M, "FasterPipeline", _StubPipeline)])
+        assert code == 1
+        assert not (out_dir / MANIFEST_NAME).exists()
 
     def test_exception_in_pipeline_is_failed_and_exits_one(self, monkeypatch, media_dir, out_dir, tmp_path):
         import whisperjav.main as M

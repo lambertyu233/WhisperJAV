@@ -90,6 +90,7 @@ from whisperjav.utils.logger import setup_logger, logger
 from whisperjav.utils.device_detector import get_best_device
 from whisperjav.utils.run_outcome import (
     FAIL_ON_CHOICES,
+    MANIFEST_NAME,
     FileOutcome,
     classify_output,
     default_manifest_path,
@@ -695,6 +696,11 @@ def parse_arguments():
                                  "'empty' and 'suspect' are reported and exit 0. With 'suspect', "
                                  "a file whose audio check finds the audio track damaged is stopped "
                                  "before transcription.")
+    async_group.add_argument("--no-manifest", action="store_true", default=False,
+                           help="Do not write " + MANIFEST_NAME + " next to the outputs. The "
+                                "console RUN SUMMARY and the exit status are unchanged -- only "
+                                "the machine-readable manifest is skipped, so a GUI that reports "
+                                "the per-file tally from it has nothing to read. Off by default.")
     
     # Subtitle signature options
     signature_group = parser.add_argument_group("Subtitle Attribution")
@@ -2277,11 +2283,12 @@ def _finish_run(outcomes: List[FileOutcome], args: argparse.Namespace,
                 force_status: Optional[int] = None) -> int:
     """The one place that turns per-file outcomes into the exit status.
 
-    Prints the state table, writes the manifest next to the outputs, and
-    returns the exit status. Every execution path (sync, async, ensemble) ends
-    here, including an interrupted or crashed run (``note`` says so and
-    ``force_status`` carries the non-zero status such a run must return);
-    argument validation is the only thing that exits before this.
+    Prints the state table, writes the manifest next to the outputs (unless
+    --no-manifest), and returns the exit status. Every execution path (sync,
+    async, ensemble) ends here, including an interrupted or crashed run
+    (``note`` says so and ``force_status`` carries the non-zero status such a
+    run must return); argument validation is the only thing that exits before
+    this.
     """
     fail_on = parse_fail_on(getattr(args, 'fail_on', None))
     status = exit_status(outcomes, fail_on)
@@ -2290,18 +2297,25 @@ def _finish_run(outcomes: List[FileOutcome], args: argparse.Namespace,
     # Reporting must never change the verdict: a problem printing the table or
     # writing the manifest is logged, and the status computed above stands.
     try:
-        manifest_path = write_manifest(
-            outcomes,
-            # From the raw inputs, not the discovered media: the GUI derives
-            # the same path from the same values (see default_manifest_path).
-            default_manifest_path(args.output_dir, [str(p) for p in (getattr(args, 'input', None) or [])]),
-            mode="ensemble" if getattr(args, 'ensemble', False) else args.mode,
-            fail_on=fail_on,
-            status=status,
-            started_at=started_at,
-            version=__version__,
-            note=note,
-        )
+        manifest_path = None
+        if getattr(args, 'no_manifest', False):
+            # The user asked for no manifest next to the outputs. The table and
+            # the status computed above are the run's verdict either way; only
+            # the machine-readable copy is skipped.
+            logger.info("Not writing %s next to the outputs (--no-manifest).", MANIFEST_NAME)
+        else:
+            manifest_path = write_manifest(
+                outcomes,
+                # From the raw inputs, not the discovered media: the GUI derives
+                # the same path from the same values (see default_manifest_path).
+                default_manifest_path(args.output_dir, [str(p) for p in (getattr(args, 'input', None) or [])]),
+                mode="ensemble" if getattr(args, 'ensemble', False) else args.mode,
+                fail_on=fail_on,
+                status=status,
+                started_at=started_at,
+                version=__version__,
+                note=note,
+            )
         print_summary(outcomes, fail_on, status, manifest_path, note)
     except Exception as report_error:  # noqa: BLE001
         logger.warning("Could not print the run summary: %s", report_error)

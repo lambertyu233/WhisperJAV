@@ -736,6 +736,7 @@ const FormManager = {
             skip_existing: document.getElementById('skipExisting').checked,
             fail_on_empty: document.getElementById('failOnEmpty').checked,
             fail_on_suspect: document.getElementById('failOnSuspect').checked,
+            write_manifest: document.getElementById('writeRunManifest').checked,
             asr_telemetry: document.getElementById('asrTelemetry').checked,
             // v1.9.2 (CFF1): minutes of scene audio before the recognizer is reloaded (0 = never)
             model_refresh_audio_minutes: document.getElementById('modelRefreshAudioMinutes').value,
@@ -5956,6 +5957,7 @@ const EnsembleManager = {
             skip_existing: document.getElementById('skipExisting').checked,
             fail_on_empty: document.getElementById('failOnEmpty').checked,
             fail_on_suspect: document.getElementById('failOnSuspect').checked,
+            write_manifest: document.getElementById('writeRunManifest').checked,
             asr_telemetry: document.getElementById('asrTelemetry').checked,
             // #415: shared Advanced-options checkbox (Transcription tab), like asrTelemetry
             offline_mode: document.getElementById('offlineMode').checked,
@@ -8379,6 +8381,7 @@ const SettingsPersistence = {
         'offlineMode':      { key: 'offlineMode',    prop: 'checked' },
         'failOnEmpty':      { key: 'failOnEmpty',    prop: 'checked' },
         'failOnSuspect':    { key: 'failOnSuspect',  prop: 'checked' },
+        'writeRunManifest': { key: 'writeRunManifest', prop: 'checked' },
         'asrTelemetry':     { key: 'asrTelemetry',   prop: 'checked' },
         'modelRefreshAudioMinutes': { key: 'modelRefreshAudioMinutes', prop: 'value' },
         // v1.9.3 (D1/#381): the Ensemble tab's two-pass selectors. The backend has

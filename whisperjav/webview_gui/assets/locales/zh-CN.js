@@ -98,6 +98,8 @@ window.I18N_STRINGS['zh-CN'] = {
     't2.failOnEmptyTitle': '未产出任何字幕的文件会被报告为“empty”，默认不导致运行失败。勾选后将其视为失败（等同于 --fail-on empty）。',
     't2.failOnSuspect': '将“可疑”文件视为失败',
     't2.failOnSuspectTitle': '字幕覆盖媒体比例过低、识别器在仍有语音时停止、或音轨疑似损坏的文件会被报告为“suspect”，默认不导致运行失败。勾选后将其视为失败（等同于 --fail-on suspect）；音轨损坏的文件将在转录前中止。',
+    't2.writeRunManifest': '生成运行清单（whisperjav_run.json）',
+    't2.writeRunManifestTitle': '默认不勾选：运行不会在输出文件夹里留下多余文件。勾选后每次运行都会在输出旁写入 whisperjav_run.json（每个文件一个状态：done / empty / suspect / failed / skipped），GUI 完成时的逐文件统计来自它（命令行运行默认就写；不勾选等同于 --no-manifest）。控制台的 RUN SUMMARY 表格与退出状态两种情况下都会照常打印。',
     't2.asrTelemetry': '保留逐场景 ASR 遥测（raw_subs）',
     't2.asrTelemetryTitle': 'Balanced 运行会在输出旁的 raw_subs 中保留识别器的逐场景记录（时序、解码重试、置信度、内存），用于诊断中途停止产出字幕的运行。取消勾选则跳过（等同于 --no-asr-telemetry）。',
     't2.reloadRecognizer': '每隔多少分钟音频重载识别器：',

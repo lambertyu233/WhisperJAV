@@ -99,6 +99,8 @@ window.I18N_STRINGS.en = {
     't2.failOnEmptyTitle': "A file that produced no subtitles is reported as 'empty' and does not fail the run. Tick to treat it as a failure (same as --fail-on empty).",
     't2.failOnSuspect': "Treat 'suspect' files as failures",
     't2.failOnSuspectTitle': "A file whose subtitles cover too little of the media, whose recognizer stopped while speech was still detected, or whose audio track looks damaged is reported as 'suspect' and does not fail the run. Tick to treat it as a failure (same as --fail-on suspect); a file with damaged audio is then stopped before transcription.",
+    't2.writeRunManifest': 'Write the run manifest (whisperjav_run.json)',
+    't2.writeRunManifestTitle': 'Off by default, so a run leaves nothing extra in the output folder. Tick to write whisperjav_run.json next to the outputs — one state per file (done / empty / suspect / failed / skipped) — which is where the GUI\'s per-file tally on completion comes from (command-line runs write it by default; unticking is the same as --no-manifest). The console RUN SUMMARY table and the exit status are printed either way.',
     't2.asrTelemetry': 'Keep per-scene ASR telemetry (raw_subs)',
     't2.asrTelemetryTitle': 'Balanced runs keep a per-scene record of the recognizer (timing, decoder retries, confidence, memory) in raw_subs next to the outputs, for diagnosing runs that stop producing subtitles. Untick to skip it (same as --no-asr-telemetry).',
     't2.reloadRecognizer': 'Reload recognizer every (minutes of audio):',

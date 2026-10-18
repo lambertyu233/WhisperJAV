@@ -448,6 +448,12 @@
                                         <span data-i18n="t2.asrTelemetry">Keep per-scene ASR telemetry (raw_subs)</span>
                                     </label>
                                 </div>
+                                <div class="form-group">
+                                    <label class="checkbox-label" data-i18n-title="t2.writeRunManifestTitle" title="Off by default, so a run leaves nothing extra in the output folder. Tick to write whisperjav_run.json next to the outputs — one state per file (done / empty / suspect / failed / skipped) — which is where the GUI's per-file tally on completion comes from (command-line runs write it by default; unticking is the same as --no-manifest). The console RUN SUMMARY table and the exit status are printed either way.">
+                                        <input type="checkbox" id="writeRunManifest">
+                                        <span data-i18n="t2.writeRunManifest">Write the run manifest (whisperjav_run.json)</span>
+                                    </label>
+                                </div>
                             </div>
                             <!-- v1.9.2 (CFF1): Balanced and Fidelity reload the recognizer with a fresh instance
                                  after this much scene audio, at a scene boundary. 0 = never. Same as

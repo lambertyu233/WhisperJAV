@@ -294,6 +294,28 @@ class TestStatusOnExit:
         assert st["status"] == "completed" and st["run_summary"] is None
         assert "[FINISHED] exit status 0 (no run summary was written)" in _drain(api)
 
+    def test_manifest_is_off_by_default_and_the_box_opts_in(self, api, tmp_path):
+        """The GUI's Advanced-options box is unticked by default: a GUI run leaves
+        nothing extra in the output folder. Ticking it forwards the CLI's default
+        (the manifest is written); unticked forwards --no-manifest on every path.
+        The CLI itself is unchanged -- command-line runs still write it, which is
+        what the measurement scripts read."""
+        assert "--no-manifest" in api.build_args(_base_options(tmp_path, write_manifest=False))
+        assert "--no-manifest" not in api.build_args(_base_options(tmp_path, write_manifest=True))
+        assert "--no-manifest" in api.build_args(
+            _base_options(tmp_path, mode="crispasr", write_manifest=False))
+        cfg = _base_options(tmp_path, write_manifest=False)
+        cfg.update({"pass1_pipeline": "balanced", "pass1_sensitivity": "balanced"})
+        assert "--no-manifest" in api._build_twopass_args(cfg)
+        assert "--no-manifest" in api._build_ensemble_args(
+            _base_options(tmp_path, write_manifest=False))
+
+        from pathlib import Path
+        html = (Path(__file__).resolve().parent.parent / "whisperjav" / "webview_gui" /
+                "assets" / "index.html").read_text(encoding="utf-8")
+        assert 'id="writeRunManifest"' in html
+        assert 'id="writeRunManifest" checked' not in html
+
     def test_the_gui_never_overrides_the_cli_exit_status(self, api, tmp_path):
         """An all-empty run exits 0 by the CLI's rule; the GUI reports it as
         finished with the tally, not as an error and not as a bare success."""

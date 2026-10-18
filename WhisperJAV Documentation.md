@@ -4961,10 +4961,10 @@ Video → Pass 2 (Pipeline B) → SRT₂ ─┘
 ## 设置集成模式
 
 1.  进入 **Ensemble** 选项卡（第 3 个选项卡）
-2.  **Pass 1** 始终处于激活状态 — 配置处理管线、灵敏度和选项
-3.  勾选复选框以**启用 Pass 2**
-4.  为 Pass 2 配置不同的处理管线
-5.  选择一种**合并策略**
+2.  **Pass 1** 始终处于激活状态，**Pass 2 默认已勾选** — 两遍已按 ChronosJAV 配方预置（Pass 1 = Anime-Whisper，Pass 2 = Qwen3-ASR，合并 = Smart Merge）
+3.  只想单遍运行：取消勾选 **Pass 2**
+4.  按需为每个 Pass 调整处理管线、灵敏度和选项
+5.  选择一种**合并策略**（默认 Smart Merge）
 6.  点击 **Start**
 
 ### Pass 配置
@@ -4997,7 +4997,7 @@ Video → Pass 2 (Pipeline B) → SRT₂ ─┘
 
 > **推荐组合**
 > 
-> **Balanced**（Pass 1）+ **Qwen3-ASR**（Pass 2）+ **Smart Merge** 对大多数内容来说是一个可靠的默认组合。
+> **Anime-Whisper**（Pass 1）+ **Qwen3-ASR**（Pass 2）+ **Smart Merge** 是开箱即用的默认组合，即 [ChronosJAV 处理管线](#page-pipelines-chronosjav) 推荐的搭配。追质量时把 Pass 1 换成 **Fidelity**（large-v2 + FireRedVAD），追速度时换成 **Balanced**。
 
 ---
 

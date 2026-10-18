@@ -148,13 +148,13 @@ class TestS01FirstLaunch:
             "accept_cpu_mode": False,
             "offline_mode": False,
             "async_processing": False,
-            # 2026-10-17 (owner): quality-first Ensemble defaults
-            "pass1_pipeline": "fidelity",
+            # 2026-10-18 (owner): ChronosJAV Ensemble defaults
+            "pass1_pipeline": "anime-whisper",
             "pass1_sensitivity": "balanced",
             "pass1_scene_detector": "semantic",
             "pass1_speech_enhancer": "none",
-            "pass1_speech_segmenter": "firered-vad",
-            "pass1_model": "large-v2",
+            "pass1_speech_segmenter": "ten",
+            "pass1_model": "litagin/anime-whisper",
             "pass2_enabled": True,
             "pass2_pipeline": "qwen",
             "pass2_sensitivity": "balanced",

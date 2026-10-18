@@ -1320,27 +1320,30 @@ const EnsembleManager = {
     // State - Full Configuration Snapshot approach
     state: {
         pass1: {
-            // 2026-10-17 (owner): the default pairing is quality-first — pass 1 is
-            // Fidelity / balanced / semantic / none / FireRedVAD. Keep in step with
-            // the parse_arguments defaults in main.py, ENSEMBLE_PASS_DEFAULTS in
-            // config/segmenter_presets.py, the selected options in index.html and
-            // applyPipelinePresets below. init() re-syncs all of this from the DOM,
-            // so index.html is what a fresh session actually shows.
-            pipeline: 'fidelity',
+            // 2026-10-18 (owner): the default pairing is the ChronosJAV recipe
+            // (docs/zh/pipelines/chronosjav.md, "作为集成模式的一部分") — pass 1
+            // is Anime-Whisper / balanced / semantic / none / TEN VAD. It
+            // supersedes the 2026-10-17 quality-first pairing (Fidelity +
+            // FireRedVAD). Keep in step with the parse_arguments defaults in
+            // main.py, ENSEMBLE_PASS_DEFAULTS / ENSEMBLE_PASS_GENERATOR_DEFAULTS
+            // in config/segmenter_presets.py, the selected options in
+            // index.html and applyPipelinePresets below. init() re-syncs all of
+            // this from the DOM, so index.html is what a fresh session shows.
+            pipeline: 'anime-whisper',
             sensitivity: 'balanced',
             sceneDetector: 'semantic',
             speechEnhancer: 'none',
-            speechSegmenter: 'firered-vad',
+            speechSegmenter: 'ten',
             vadVersion: '4.0',  // v1.9.2: which Silero build the BUILT-IN VAD runs (balanced only).
                                 // Keep in step with defaultVadVersion below and with
                                 // DEFAULT_VAD_VERSION in modules/silero_vad_adapter.py.
-            model: 'large-v2',
+            model: 'litagin/anime-whisper',
             customized: false,
             params: null,  // null = use defaults, object = full custom config
             presetName: null,  // Name of loaded preset, or null if none
             isTransformers: false,  // Track if using Transformers pipeline
             isQwen: true,  // ChronosJAV umbrella: any of qwen / anime-whisper / cohere
-            isAnimeWhisper: false,  // Track if using Anime-Whisper specifically
+            isAnimeWhisper: true,  // Track if using Anime-Whisper specifically
             isCohere: false,  // Track if using Cohere-Transcribe specifically (v1.8.14)
             isCrispasr: false,  // Track if using CrispASR external provider (v1.9.0)
             framer: 'vad-grouped',  // Qwen temporal framer (vad-grouped/full-scene)
@@ -1349,14 +1352,14 @@ const EnsembleManager = {
         },
         pass2: {
             enabled: true,
-            // 2026-10-17 (owner): pass 2 is Qwen3-ASR / balanced / semantic / none /
-            // TEN VAD, and is ON by default as part of the quality-first pairing
-            // (the v1.9.5 decision to keep pass 2 off until ticked is superseded).
+            // 2026-10-18 (owner): pass 2 is Qwen3-ASR / balanced / semantic / none /
+            // TEN VAD, ON by default — the ChronosJAV recipe's pass 2 (the v1.9.5
+            // decision to keep pass 2 off until ticked is superseded).
             pipeline: 'qwen',
             sensitivity: 'balanced',
             sceneDetector: 'semantic',
             speechEnhancer: 'none',
-            speechSegmenter: 'ten',  // TEN VAD on pass 2 for segmentation diversity vs pass 1's FireRedVAD
+            speechSegmenter: 'ten',  // TEN VAD, the pass 2 the ChronosJAV recipe pairs with anime-whisper pass 1
             vadVersion: '4.0',  // v1.9.2: which Silero build the BUILT-IN VAD runs (balanced only).
                                 // Keep in step with defaultVadVersion below and with
                                 // DEFAULT_VAD_VERSION in modules/silero_vad_adapter.py.
@@ -1921,12 +1924,16 @@ const EnsembleManager = {
         // (2026-09-12). Users can override via the dropdown (e.g. switch to
         // silero-v3.1 for non-JA audio).
         if (pipelineType === 'anime-whisper') {
-            // v1.9.0: pass 1 anime-whisper defaults to aggressive — the tuned
+            // v1.9.0: pass 1 anime-whisper defaulted to aggressive on the tuned
             // WhisperSeg row (wide-net capture).
             // v1.9.5 (owner, 2026-10-12): pass 2 anime-whisper is TEN VAD at
             // aggressive (ENSEMBLE_PASS_DEFAULTS, config/segmenter_presets.py).
-            const animeSensitivity = 'aggressive';
-            const animeSegmenter = passKey === 'pass2' ? 'ten' : 'whisperseg';
+            // 2026-10-18 (owner): the ChronosJAV recipe became the default
+            // pairing, and its chapter names TEN VAD as the ChronosJAV
+            // segmenter — so pass 1 anime-whisper is now TEN at balanced too,
+            // matching the ("1", "anime-whisper") row. Pass 2 keeps its row.
+            const animeSensitivity = passKey === 'pass2' ? 'aggressive' : 'balanced';
+            const animeSegmenter = 'ten';
             sceneSelect.value = 'semantic';
             segmenterSelect.value = animeSegmenter;
             sensitivitySelect.value = animeSensitivity;

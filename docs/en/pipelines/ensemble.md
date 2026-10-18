@@ -24,22 +24,24 @@ Merging combines the best of both.
 ## Setting Up Ensemble
 
 1. Go to the **Ensemble** tab (Tab 3)
-2. **Pass 1** is always active and **Pass 2 is checked by default** — both come pre-set to the quality recipe (see *Default Configuration* below), so the defaults work out of the box
+2. **Pass 1** is always active and **Pass 2 is checked by default** — both come pre-set to the ChronosJAV recipe (see *Default Configuration* below), so the defaults work out of the box
 3. To run a single pass only: uncheck the **Pass 2** checkbox
 4. Optionally adjust pipeline, sensitivity, and options for each pass
 5. Choose a **Merge Strategy** (Smart Merge by default)
 6. Click **Start**
 
-### Default Configuration (Quality Recipe)
+### Default Configuration (ChronosJAV Recipe)
 
-The out-of-the-box two-pass setup — on the CLI, `whisperjav video.mp4 --ensemble` uses the same one:
+The out-of-the-box two-pass setup, taken from the [ChronosJAV pipeline](chronosjav.md) page ("As part of ensemble mode") — on the CLI, `whisperjav video.mp4 --ensemble` uses the same one:
 
 | Pass | Pipeline | Sensitivity | Scene | Enhancer | Segmenter | Model |
 |------|----------|-------------|-------|----------|-----------|-------|
-| 1 | Fidelity | Balanced | Semantic | None | FireRedVAD | large-v2 |
+| 1 | Anime-Whisper (ChronosJAV) | Balanced | Semantic | None | TEN | litagin/anime-whisper |
 | 2 | Qwen3-ASR | Balanced | Semantic | None | TEN | Qwen/Qwen3-ASR-1.7B |
 
-The default merge strategy is **Smart Merge**. For speed, swap Pass 1 to **Balanced**, or turn Pass 2 off with `--pass2-pipeline none`.
+The default merge strategy is **Smart Merge**. For maximum quality, swap Pass 1 to **Fidelity** (large-v2 + FireRedVAD); for speed, swap it to **Balanced**; or turn Pass 2 off with `--pass2-pipeline none`.
+
+> **CLI note:** `--pass1-pipeline qwen` cannot say which ChronosJAV generator it means — anime-whisper and Qwen3-ASR are one pipeline with two generators. Pass 1 defaults to anime-whisper; for Qwen3-ASR on pass 1, pass `--pass1-qwen-params '{"generator_backend": "qwen3"}'`.
 
 ### Pass Configuration
 
@@ -70,7 +72,7 @@ Click **Customize** on any pass for fine-grained parameter control.
 | **Overlap 30%** | Conservative merge — requires 30% time overlap before merging |
 
 !!! tip "Default Combo"
-    **Fidelity** (Pass 1) + **Qwen3-ASR** (Pass 2) + **Smart Merge** is the out-of-the-box quality default. Swap Pass 1 to **Balanced** when you want speed.
+    **Anime-Whisper** (Pass 1) + **Qwen3-ASR** (Pass 2) + **Smart Merge** is the out-of-the-box default — the pairing the ChronosJAV pipeline page recommends. Swap Pass 1 to **Fidelity** for maximum quality, or to **Balanced** when you want speed.
 
 ---
 

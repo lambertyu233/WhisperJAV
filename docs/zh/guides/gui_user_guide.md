@@ -176,12 +176,14 @@ WhisperJAV 接受 FFmpeg 支持的任何格式的视频和音频文件（MP4、M
 
 | 控制项 | 选项 | 默认值 |
 |--------|------|--------|
-| **处理管线** | Balanced、Fast、Faster、Fidelity、Transformers、Qwen3-ASR、ChronosJAV、XXL Faster Whisper | Balanced |
-| **灵敏度** | 激进、均衡、保守 | 激进 |
+| **处理管线** | Balanced、Fast、Faster、Fidelity、Transformers、Qwen3-ASR、Anime-Whisper、XXL Faster Whisper | Pass 1 = Anime-Whisper，Pass 2 = Qwen3-ASR |
+| **灵敏度** | 激进、均衡、保守 | 均衡 |
 | **场景检测器** | Auditok、Silero、Semantic、None | Semantic |
 | **语音增强器** | None、FFmpeg DSP、ZipEnhancer、ClearVoice、BS-RoFormer | None |
-| **语音分割器** | Silero v6.2、v4.0、v3.1、Whisper VAD、TEN、None | Silero v6.2 |
-| **模型** | 取决于处理管线 — Large V2/V3/Turbo (Whisper) 或 1.7B/0.6B (Qwen) | 处理管线默认值 |
+| **语音分割器** | Silero v6.2、v4.0、v3.1、Whisper VAD、TEN、FireRedVAD、None | TEN |
+| **模型** | 取决于处理管线 — Large V2/V3/Turbo (Whisper)、1.7B/0.6B (Qwen) 或 anime-whisper / Kotoba | 处理管线默认值（Pass 1 = litagin/anime-whisper） |
+
+两遍的默认组合即 [ChronosJAV 管线](../pipelines/chronosjav.md) 推荐的搭配：Pass 1 用 Anime-Whisper，Pass 2 用 Qwen3-ASR，合并策略为 Smart Merge。追质量时把 Pass 1 换成 **Fidelity**（large-v2 + FireRedVAD）。
 
 ### 可用处理管线
 

@@ -42,11 +42,13 @@ WHAT'S NEW IN v{{VERSION}}
      saved deepseek-v4-flash, it is kept.
 
 3. ENSEMBLE MODE DEFAULTS
-   - The quality-first default: pass 1 now starts as Fidelity
-     (large-v2) with FireRedVAD, and pass 2 as Qwen3-ASR with TEN
-     VAD, both on Balanced. Pass 2 now runs by default; untick it
-     for a single pass.
-   - The default merge strategy is now Smart Merge.
+   - The ChronosJAV recipe is the default: pass 1 starts as
+     Anime-Whisper (litagin/anime-whisper) with TEN VAD, and pass 2 as
+     Qwen3-ASR with TEN VAD, both on Balanced. Pass 2 runs by
+     default; untick it for a single pass.
+   - For the most thorough classic pipeline on pass 1, pick Fidelity
+     (large-v2 with FireRedVAD) instead.
+   - The default merge strategy is Smart Merge.
    - With "Remember settings" on, your saved rows are kept until you
      change them.
 

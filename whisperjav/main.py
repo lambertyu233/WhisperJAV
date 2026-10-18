@@ -128,6 +128,7 @@ from whisperjav.config.segmenter_presets import (
     FIDELITY_DEFAULT_SEGMENTER,
     SINGLE_PASS_EXTERNAL_OK,
     effective_segmenter_for_pass,
+    ensemble_pass_generator,
     resolve_segmenter_sensitivity,
     segmenter_accepts,
 )
@@ -329,32 +330,37 @@ def parse_arguments():
     # Two-pass ensemble mode arguments
     twopass_group = parser.add_argument_group("Two-Pass Ensemble Options")
     twopass_group.add_argument("--ensemble", action="store_true",
-                               help="Enable ensemble mode (two-pass by default: pass 1 fidelity "
-                                    "+ pass 2 qwen, merged with smart_merge; --pass2-pipeline "
-                                    "none leaves a single pass)")
+                                  help="Enable ensemble mode (two-pass by default: pass 1 ChronosJAV "
+                                       "with anime-whisper + pass 2 Qwen3-ASR, merged with smart_merge; "
+                                       "--pass2-pipeline none leaves a single pass)")
     # Note: kotoba-faster-whisper temporarily hidden from user selection (implementation preserved)
-    twopass_group.add_argument("--pass1-pipeline", default="fidelity",
-                               choices=["balanced", "fast", "faster", "fidelity", "transformers", "qwen", "crispasr"],
-                               help="Pipeline for pass 1 (default: fidelity, the quality-first "
-                                    "pairing; pass 2 defaults to qwen and the merge to "
-                                    "smart_merge). 'crispasr' requires --crispasr-exe")
+    twopass_group.add_argument("--pass1-pipeline", default="qwen",
+                              choices=["balanced", "fast", "faster", "fidelity", "transformers", "qwen", "crispasr"],
+                              help="Pipeline for pass 1 (default: qwen, i.e. ChronosJAV with the "
+                                   "anime-whisper generator — name another one with "
+                                   "--pass1-qwen-params '{\"generator_backend\": \"qwen3\"}'; pass 2 "
+                                   "defaults to qwen and the merge to smart_merge). "
+                                   "'crispasr' requires --crispasr-exe")
     twopass_group.add_argument("--pass1-sensitivity", default=None,
-                               choices=["conservative", "balanced", "aggressive"],
-                               help="Sensitivity for pass 1 (default: aggressive when pass 1 is "
-                                    "Qwen3-ASR, otherwise balanced)")
+                              choices=["conservative", "balanced", "aggressive"],
+                              help="Sensitivity for pass 1 (default: balanced for the default "
+                                   "anime-whisper pass 1 and for a Fidelity pass 1, aggressive "
+                                   "for a plain Qwen3-ASR one)")
     twopass_group.add_argument("--pass1-overrides", default=None,
-                               help="JSON string of parameter overrides for pass 1 (deprecated)")
+                              help="JSON string of parameter overrides for pass 1 (deprecated)")
     twopass_group.add_argument("--pass1-params", default=None,
-                               help="JSON string of full parameters for pass 1 (custom mode)")
+                              help="JSON string of full parameters for pass 1 (custom mode)")
     twopass_group.add_argument("--pass1-hf-params", default=None,
-                               help="JSON string of HuggingFace Transformers parameters for pass 1 (when pipeline=transformers)")
+                              help="JSON string of HuggingFace Transformers parameters for pass 1 (when pipeline=transformers)")
     twopass_group.add_argument("--pass1-qwen-params", default=None,
-                               help="JSON string of Qwen3-ASR parameters for pass 1 (when pipeline=qwen)")
+                              help="JSON string of Qwen3-ASR parameters for pass 1 (when pipeline=qwen). "
+                                   "\"generator_backend\" picks the ChronosJAV generator (default: "
+                                   "anime-whisper on pass 1, qwen3 on pass 2)")
     twopass_group.add_argument("--pass1-scene-detector", default=None,
-                               choices=["auditok", "silero", "semantic", "none"],
-                               help="Scene detection method for pass 1 (default: semantic since v1.9.2)")
+                              choices=["auditok", "silero", "semantic", "none"],
+                              help="Scene detection method for pass 1 (default: semantic since v1.9.2)")
     twopass_group.add_argument("--pass1-speech-segmenter", default=None,
-                               help="Speech segmenter backend for pass 1 (e.g., silero, ten, nemo, whisper-vad, none). Default: firered-vad when pass 1 is Qwen3-ASR. Not accepted when --pass1-pipeline is balanced: that pass runs the built-in VAD, so use --pass1-vad-version instead.")
+                              help="Speech segmenter backend for pass 1 (e.g., silero, ten, nemo, whisper-vad, none). Default: ten for the default anime-whisper pass 1, firered-vad for a plain Qwen3-ASR one. Not accepted when --pass1-pipeline is balanced: that pass runs the built-in VAD, so use --pass1-vad-version instead.")
     twopass_group.add_argument("--pass1-vad-version", default=None,
                                choices=list(VAD_VERSIONS),
                                help="Silero VAD build for pass 1 when --pass1-pipeline is balanced "
@@ -2310,18 +2316,26 @@ def _finish_run(outcomes: List[FileOutcome], args: argparse.Namespace,
 def apply_ensemble_pass_defaults(args) -> None:
     """
     Normalise the pass-2 sentinel, then fill in the Ensemble defaults the user did
-    not set (owner, 2026-10-17: the quality-first default pairing).
+    not set (owner, 2026-10-18: the ChronosJAV recipe from
+    docs/zh/pipelines/chronosjav.md — pass 1 ChronosJAV/anime-whisper + pass 2
+    Qwen3-ASR, merged with smart_merge).
 
-    A bare --ensemble now runs pass 1 Fidelity + pass 2 Qwen3-ASR merged with
-    smart_merge; those pipeline and strategy defaults live in parse_arguments.
-    This function covers the rest: the per-pipeline rows in ENSEMBLE_PASS_DEFAULTS
-    (pass 1 Qwen3-ASR runs FireRedVAD at aggressive; pass 2 anime-whisper runs TEN
-    VAD at aggressive; pass 2 Qwen3-ASR runs TEN VAD at balanced) and, for every
-    other pass, sensitivity balanced. Only for a pass that IS that pipeline, and
-    only for what the command line left out; no pipeline default changes. A
-    fidelity pass 1 keeps the segmenter pass_worker resolves for it (firered-vad).
-    Runs before anything reads the pass settings, so --dump-params shows what the
-    run uses.
+    A bare --ensemble now runs pass 1 ChronosJAV with anime-whisper + pass 2
+    Qwen3-ASR merged with smart_merge; those pipeline and strategy defaults live
+    in parse_arguments. This function covers the rest: the per-pipeline rows in
+    ENSEMBLE_PASS_DEFAULTS (pass 1 anime-whisper runs TEN VAD at balanced; pass 1
+    Qwen3-ASR FireRedVAD at aggressive; pass 2 anime-whisper TEN at aggressive;
+    pass 2 Qwen3-ASR TEN VAD at balanced) and, for every other pass, sensitivity
+    balanced. Only for a pass that IS that pipeline, and only for what the
+    command line left out; no pipeline default changes. A fidelity pass 1 keeps
+    the segmenter pass_worker resolves for it (firered-vad). Runs before anything
+    reads the pass settings, so --dump-params shows what the run uses.
+
+    Which generator a qwen pass runs comes from ensemble_pass_generator(): the
+    user's "generator_backend" in --passN-qwen-params, else the ensemble default
+    for that pass (config/segmenter_presets.py
+    ENSEMBLE_PASS_GENERATOR_DEFAULTS). It is the same call the pass config build
+    makes, so the row that picks a segmenter is the generator that runs.
 
     Sentinel: --pass2-pipeline none means "no pass 2". The GUI sends it when the
     Pass 2 box is unticked, because pass 2 now HAS a pipeline default (qwen) and
@@ -2343,7 +2357,7 @@ def apply_ensemble_pass_defaults(args) -> None:
                     pass  # a malformed value is reported where the pass is built
             if not isinstance(qwen_params, dict):
                 qwen_params = {}
-            generator = qwen_params.get("generator_backend", "qwen3")
+            generator = ensemble_pass_generator(n, qwen_params)
             defaults = dict(ENSEMBLE_PASS_DEFAULTS.get((n, generator), {}))
             # A segmenter named inside the JSON (qwen_segmenter) is the user's
             # choice too; filling --passN-speech-segmenter would override it
@@ -2355,6 +2369,28 @@ def apply_ensemble_pass_defaults(args) -> None:
                     defaults.get("sensitivity", ENSEMBLE_DEFAULT_SENSITIVITY))
         if getattr(args, f"pass{n}_speech_segmenter", None) is None and "speech_segmenter" in defaults:
             setattr(args, f"pass{n}_speech_segmenter", defaults["speech_segmenter"])
+
+
+def apply_ensemble_generator_default(pass_number, pipeline, qwen_params):
+    """Give a qwen pass the generator it runs when the user named none.
+
+    `--pass1-pipeline qwen` cannot say which ChronosJAV generator it means —
+    anime-whisper and Qwen3-ASR are the same pipeline with a different
+    generator_backend — so a bare --ensemble would run Qwen3-ASR on both passes
+    (pass_worker.DEFAULT_QWEN_PARAMS). This writes the ensemble default for the
+    pass into the params the worker receives, which is also what
+    apply_ensemble_pass_defaults read to pick the segmenter row. A generator the
+    user named, and any pass that is not a qwen pass, are left untouched; None in,
+    None out for the latter so the worker keeps using its own defaults.
+
+    Owner, 2026-10-18 (the ChronosJAV recipe became the Ensemble default).
+    """
+    if pipeline != "qwen":
+        return qwen_params
+    params = dict(qwen_params or {})
+    if not params.get("generator_backend"):
+        params["generator_backend"] = ensemble_pass_generator(pass_number, params)
+    return params
 
 
 def validate_balanced_vad_options(args) -> None:
@@ -2494,8 +2530,8 @@ def main():
         _mr = getattr(args, 'model_refresh_audio_minutes', None)
         if _mr is not None and _mr < 0:
             raise ValueError(f"--model-refresh-audio-minutes: expected 0 (never) or a positive number of minutes, got {_mr}")
-        # 2026-10-17: Ensemble defaults for the passes the user left unset
-        # (quality-first pairing: pass 1 Fidelity, pass 2 Qwen3-ASR, Smart Merge).
+        # 2026-10-18: Ensemble defaults for the passes the user left unset
+        # (the ChronosJAV recipe: pass 1 anime-whisper, pass 2 Qwen3-ASR, Smart Merge).
         apply_ensemble_pass_defaults(args)
         # S2/S9: balanced has no external segmenter any more (v1.9.2).
         validate_balanced_vad_options(args)
@@ -3383,6 +3419,11 @@ def main():
                 except json.JSONDecodeError as e:
                     logger.error(f"Invalid JSON in --pass1-qwen-params: {e}")
                     sys.exit(1)
+            # The default pass 1 is ChronosJAV with anime-whisper, which is the
+            # `qwen` pipeline plus a generator — name it here when the user did
+            # not (apply_ensemble_generator_default).
+            pass1_qwen_params = apply_ensemble_generator_default(
+                "1", args.pass1_pipeline, pass1_qwen_params)
 
             pass2_qwen_params = None
             if getattr(args, 'pass2_qwen_params', None):
@@ -3391,6 +3432,8 @@ def main():
                 except json.JSONDecodeError as e:
                     logger.error(f"Invalid JSON in --pass2-qwen-params: {e}")
                     sys.exit(1)
+            pass2_qwen_params = apply_ensemble_generator_default(
+                "2", args.pass2_pipeline, pass2_qwen_params)
 
             # Build pass configurations
             # Full Configuration Snapshot approach:

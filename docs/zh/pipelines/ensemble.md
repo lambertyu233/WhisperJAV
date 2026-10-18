@@ -24,22 +24,24 @@ Video → Pass 2 (Pipeline B) → SRT₂ ─┘
 ## 设置集成模式
 
 1. 进入 **Ensemble** 选项卡（第 3 个选项卡）
-2. **Pass 1 始终处于激活状态**，**Pass 2 默认已勾选** — 两遍均预置了追质量配方（见下方「默认配置」），什么都不改即可直接使用
+2. **Pass 1 始终处于激活状态**，**Pass 2 默认已勾选** — 两遍均预置了 ChronosJAV 配方（见下方「默认配置」），什么都不改即可直接使用
 3. 只想单遍运行：取消勾选 **Pass 2** 复选框
 4. 按需为每个 Pass 调整处理管线、灵敏度、场景检测、语音增强、语音分段器和模型
 5. 选择一种**合并策略**（默认 Smart Merge）
 6. 点击 **Start**
 
-### 默认配置（追质量配方）
+### 默认配置（ChronosJAV 配方）
 
-开箱即用的两遍配置，CLI 上 `whisperjav video.mp4 --ensemble` 同样使用它：
+开箱即用的两遍配置，取自 [ChronosJAV 管线](chronosjav.md) 的「作为集成模式的一部分」，CLI 上 `whisperjav video.mp4 --ensemble` 同样使用它：
 
 | Pass | Pipeline | Sensitivity | Scene | Enhancer | Segmenter | Model |
 |------|----------|-------------|-------|----------|-----------|-------|
-| 1 | Fidelity | Balanced | Semantic | None | FireRedVAD | large-v2 |
+| 1 | Anime-Whisper（ChronosJAV） | Balanced | Semantic | None | TEN | litagin/anime-whisper |
 | 2 | Qwen3-ASR | Balanced | Semantic | None | TEN | Qwen/Qwen3-ASR-1.7B |
 
-合并策略默认为 **Smart Merge**。追速度时可将 Pass 1 换成 Balanced，或用 `--pass2-pipeline none` 关闭 Pass 2。
+合并策略默认为 **Smart Merge**。追质量时把 Pass 1 换成 **Fidelity**（large-v2 + FireRedVAD），追速度时换成 **Balanced**，或用 `--pass2-pipeline none` 关闭 Pass 2。
+
+> **CLI 注意**：`--pass1-pipeline qwen` 无法说明用哪个 ChronosJAV 生成器 —— anime-whisper 与 Qwen3-ASR 是同一条管线、不同生成器。命令行上默认 Pass 1 用 anime-whisper；要换成 Qwen3-ASR 请显式写 `--pass1-qwen-params '{"generator_backend": "qwen3"}'`。
 
 ### Pass 配置
 
@@ -70,7 +72,7 @@ Video → Pass 2 (Pipeline B) → SRT₂ ─┘
 | **Overlap 30%** | 保守合并 — 要求 30% 的时间重叠才进行合并 |
 
 !!! tip "默认组合"
-    **Fidelity**（Pass 1）+ **Qwen3-ASR**（Pass 2）+ **Smart Merge** 是开箱即用的追质量默认组合。追求速度时可把 Pass 1 换成 **Balanced**。
+    **Anime-Whisper**（Pass 1）+ **Qwen3-ASR**（Pass 2）+ **Smart Merge** 是开箱即用的默认组合，即 ChronosJAV 管线推荐的搭配。追质量时可把 Pass 1 换成 **Fidelity**，追速度时换成 **Balanced**。
 
 ---
 

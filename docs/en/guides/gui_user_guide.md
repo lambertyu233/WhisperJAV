@@ -176,12 +176,14 @@ Always active. Each pass has identical controls:
 
 | Control | Options | Default |
 |---------|---------|---------|
-| **Pipeline** | Balanced, Fast, Faster, Fidelity, Transformers, Qwen3-ASR, ChronosJAV, XXL Faster Whisper | Balanced |
-| **Sensitivity** | Aggressive, Balanced, Conservative | Aggressive |
+| **Pipeline** | Balanced, Fast, Faster, Fidelity, Transformers, Qwen3-ASR, Anime-Whisper, XXL Faster Whisper | Pass 1 = Anime-Whisper, Pass 2 = Qwen3-ASR |
+| **Sensitivity** | Aggressive, Balanced, Conservative | Balanced |
 | **Scene Detector** | Auditok, Silero, Semantic, None | Semantic |
 | **Speech Enhancer** | None, FFmpeg DSP, ZipEnhancer, ClearVoice, BS-RoFormer | None |
-| **Speech Segmenter** | Silero v6.2, v4.0, v3.1, Whisper VAD, TEN, None | Silero v6.2 |
-| **Model** | Depends on pipeline — Large V2/V3/Turbo (Whisper) or 1.7B/0.6B (Qwen) | Pipeline default |
+| **Speech Segmenter** | Silero v6.2, v4.0, v3.1, Whisper VAD, TEN, FireRedVAD, None | TEN |
+| **Model** | Depends on pipeline — Large V2/V3/Turbo (Whisper), 1.7B/0.6B (Qwen), or anime-whisper / Kotoba | Pipeline default (Pass 1 = litagin/anime-whisper) |
+
+The two default passes are the pairing the [ChronosJAV pipeline](../pipelines/chronosjav.md) page recommends: Anime-Whisper on pass 1, Qwen3-ASR on pass 2, merged with Smart Merge. For maximum quality, swap pass 1 to **Fidelity** (large-v2 + FireRedVAD).
 
 ### Available Pipelines
 

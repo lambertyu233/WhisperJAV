@@ -99,21 +99,31 @@ BALANCED_DEFAULT_SEGMENTER = "faster-whisper"
 # extra install; its model weights download from HuggingFace on first use.
 FIDELITY_DEFAULT_SEGMENTER = "firered-vad"
 
-# Owner, 2026-10-17: the Ensemble defaults are the quality-first pairing — pass 1
-# Fidelity with FireRedVAD at balanced (that pipeline default lives in
-# parse_arguments, the segmenter in FIDELITY_DEFAULT_SEGMENTER) and pass 2
-# Qwen3-ASR with TEN VAD at balanced. The rows below are the per-pipeline values a
-# ChronosJAV pass falls back to, keyed by (pass, generator); the generator comes
-# from --passN-qwen-params "generator_backend" (qwen3 when absent). On the command
+# Owner, 2026-10-18: the Ensemble defaults are the ChronosJAV recipe from
+# docs/zh/pipelines/chronosjav.md ("作为集成模式的一部分"): pass 1 ChronosJAV
+# with anime-whisper, pass 2 Qwen3-ASR, merged with smart_merge. This
+# supersedes the 2026-10-17 quality-first pairing (pass 1 Fidelity with
+# FireRedVAD) as the DEFAULT only — every pipeline stays selectable, and
+# --pass1-pipeline fidelity still runs exactly as before.
+#
+# The rows below are the per-pipeline values a ChronosJAV pass falls back to,
+# keyed by (pass, generator); the generator comes from --passN-qwen-params
+# "generator_backend" or, when the user named none, from
+# ENSEMBLE_PASS_GENERATOR_DEFAULTS (ensemble_pass_generator). On the command
 # line they apply only when the pass IS that pipeline and the user named no
 # segmenter or sensitivity (main.py apply_ensemble_pass_defaults); no pipeline
-# default changes. The GUI Ensemble tab applies the same values when the pipeline
-# is picked (assets/app.js applyPipelinePresets and the EnsembleManager start-up
-# state). Keep them in step.
+# default changes. The GUI Ensemble tab applies the same values when the
+# pipeline is picked (assets/app.js applyPipelinePresets and the EnsembleManager
+# start-up state). Keep them in step.
 ENSEMBLE_PASS_DEFAULTS = {
+    # The default pass 1. TEN, not WhisperSeg, because the ChronosJAV chapter
+    # names TEN as the ChronosJAV segmenter; the 4 s segment cap still applies
+    # on top of TEN's own preset (config/chronosjav_vad.py LONGEST_SEGMENT_S).
+    ("1", "anime-whisper"): {"speech_segmenter": "ten", "sensitivity": "balanced"},
+    # A pass 1 left on plain Qwen3-ASR keeps the v1.9.5 pairing.
     ("1", "qwen3"): {"speech_segmenter": "firered-vad", "sensitivity": "aggressive"},
     ("2", "anime-whisper"): {"speech_segmenter": "ten", "sensitivity": "aggressive"},
-    # 2026-10-17: pass 2 Qwen3-ASR is the new default pass 2. TEN + balanced is
+    # 2026-10-17: pass 2 Qwen3-ASR is the default pass 2. TEN + balanced is
     # the pairing the GUI has given a pass-2 qwen since v1.9.0; this row makes
     # the CLI resolve identically instead of leaving the segmenter to the ASR
     # module (which would run whisperseg there).
@@ -121,6 +131,25 @@ ENSEMBLE_PASS_DEFAULTS = {
 }
 # Every other pass — Fidelity included — keeps sensitivity balanced.
 ENSEMBLE_DEFAULT_SENSITIVITY = "balanced"
+
+# The generator backend a qwen pass runs when the user named none in
+# --passN-qwen-params. --passN-pipeline alone cannot say this: anime-whisper
+# and Qwen3-ASR are both the `qwen` pipeline with a different generator, so a
+# bare --ensemble has to name one per pass.
+ENSEMBLE_PASS_GENERATOR_DEFAULTS = {"1": "anime-whisper", "2": "qwen3"}
+
+
+def ensemble_pass_generator(pass_number, qwen_params: dict[str, Any] | None = None) -> str:
+    """The generator backend a ChronosJAV pass runs: the user's
+    "generator_backend" when they gave one, else the ensemble default for that
+    pass. Read by main.py both where it fills the per-pass segmenter/sensitivity
+    defaults (apply_ensemble_pass_defaults) and where it builds the pass config
+    for the worker, so the row that picked a segmenter is the generator that
+    actually runs."""
+    named = (qwen_params or {}).get("generator_backend")
+    if named:
+        return named
+    return ENSEMBLE_PASS_GENERATOR_DEFAULTS.get(str(pass_number), "qwen3")
 
 # Non-Silero segmenters that main.py must NOT downgrade on a single-pass run.
 #

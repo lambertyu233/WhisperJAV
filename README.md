@@ -251,11 +251,14 @@ The same decoupled design is why new models can be added without rebuilding the 
 
 Different pipelines miss different lines. Ensemble mode runs your file through two pipelines and merges the results.
 
-**The default pairing:** pass 1 = **Fidelity** (large-v2) with FireRedVAD, pass 2 = **Qwen3-ASR** with TEN VAD, both on Balanced — the most thorough classic pipeline plus a modern text-first recogniser, and two different VADs so their blind spots don't overlap. Results are merged with **Smart Merge**. Pass 2 runs by default; uncheck it in the GUI, or use `--pass2-pipeline none`, for a single pass.
+**The default pairing:** pass 1 = **Anime-Whisper** (ChronosJAV, `litagin/anime-whisper`) with TEN VAD, pass 2 = **Qwen3-ASR** with TEN VAD, both on Balanced — the recipe the ChronosJAV pipeline page recommends for the highest quality. Results are merged with **Smart Merge**. Pass 2 runs by default; uncheck it in the GUI, or use `--pass2-pipeline none`, for a single pass. For the most thorough classic pipeline instead, set pass 1 to **Fidelity** (large-v2 + FireRedVAD) — the pairing that was the default until 2026-10-18.
 
 ```bash
-# Quality-tuned defaults: pass 1 Fidelity + pass 2 Qwen3-ASR, Smart Merge
+# ChronosJAV defaults: pass 1 Anime-Whisper + pass 2 Qwen3-ASR, Smart Merge
 whisperjav video.mp4 --ensemble
+
+# The previous quality-first pairing, still one flag away
+whisperjav video.mp4 --ensemble --pass1-pipeline fidelity
 ```
 
 - **Merge strategies:** `pass1_primary` / `pass2_primary` (one pass leads, the other fills gaps), `smart_merge`, `full_merge`, `pass1_overlap` / `pass2_overlap`, `longest`
@@ -328,7 +331,7 @@ Decides what the model hears — and in ChronosJAV pipelines, where your timesta
 | Backend | Strength | Watch out |
 |---|---|---|
 | **WhisperSeg** | Trained on Japanese ASMR-style audio; tuned against our ground truth; the JA default | Japanese-specialised — switch it for other languages |
-| **TEN VAD** | Light and quick; good general performer; pass-2 default for diversity | Less JA-specialised than WhisperSeg |
+| **TEN VAD** | Light and quick; good general performer; the default on both ensemble passes | Less JA-specialised than WhisperSeg |
 | **Silero v3.1 / v4.0** | Solid general-purpose; the recommendation for non-Japanese audio | Tends to miss very quiet Japanese speech |
 | **Silero v6.2** | Adds max-duration splitting and finer control | Same quiet-speech caveat |
 | **Faster-Whisper native** *(Balanced — and the only option there)* | Fastest — one recognizer call per scene; pick the Silero build with `--vad-version` | Coarser timing than a dedicated VAD; no independent speech detector for the run-outcome check |
@@ -357,7 +360,8 @@ A few known-good recipes:
 
 | Goal | Pass 1 | Pass 2 | Merge |
 |---|---|---|---|
-| The quality default | fidelity · semantic · FireRedVAD · balanced | qwen · semantic · TEN · balanced | `smart_merge` |
+| The default | anime-whisper · semantic · TEN · balanced | qwen · semantic · TEN · balanced | `smart_merge` |
+| Classic quality | fidelity · semantic · FireRedVAD · balanced | qwen · semantic · TEN · balanced | `smart_merge` |
 | Classic + modern | balanced · large-v2 | qwen (or the Anime-Galgame finetune) | `pass1_primary` |
 | Quiet/ASMR recall | fidelity · aggressive | anime-whisper · aggressive | `longest` |
 | Second opinion on the model only | your usual recipe | same recipe, different ASR model | `pass1_primary` |

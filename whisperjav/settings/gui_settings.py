@@ -63,17 +63,19 @@ DEFAULT_GUI_SETTINGS = {
     "ui_language": "en",
 
     # Tab 3 — Ensemble  (values MUST match index.html `selected` attrs)
-    # 2026-10-17 (owner): the quality-first pairing — pass 1 Fidelity +
-    # FireRedVAD at balanced, pass 2 Qwen3-ASR + TEN VAD at balanced, merged
-    # with smart_merge; pass 2 on by default. Keep in step with the
-    # parse_arguments defaults in main.py and ENSEMBLE_PASS_DEFAULTS in
+    # 2026-10-18 (owner): the ChronosJAV recipe from the ChronosJAV pipeline
+    # chapter — pass 1 ChronosJAV with anime-whisper + TEN VAD at balanced,
+    # pass 2 Qwen3-ASR + TEN VAD at balanced, merged with smart_merge; pass 2 on
+    # by default. Supersedes the 2026-10-17 quality-first pairing (pass 1
+    # Fidelity). Keep in step with the parse_arguments defaults in main.py and
+    # ENSEMBLE_PASS_DEFAULTS / ENSEMBLE_PASS_GENERATOR_DEFAULTS in
     # whisperjav/config/segmenter_presets.py.
-    "pass1_pipeline": "fidelity",
+    "pass1_pipeline": "anime-whisper",
     "pass1_sensitivity": "balanced",
     "pass1_scene_detector": "semantic",
     "pass1_speech_enhancer": "none",
-    "pass1_speech_segmenter": "firered-vad",
-    "pass1_model": "large-v2",
+    "pass1_speech_segmenter": "ten",
+    "pass1_model": "litagin/anime-whisper",
     "pass2_enabled": True,
     "pass2_pipeline": "qwen",
     "pass2_sensitivity": "balanced",
